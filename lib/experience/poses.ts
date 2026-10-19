@@ -159,7 +159,19 @@ export function buildSegments(L: Layout): { segments: Segment[]; specs: [number,
       const out: Pose = { ...rest, ry: ry1 };
       const a = Math.max(prevAt, sec.top - L.vh * 0.35);
       const b = Math.max(a, sec.top + sec.height - L.vh * 0.8);
-      segments.push({ a: prevAt, b: a, f: (u, y) => mix(from(y), pin, smooth(u)) });
+      // Si el bote cambia de lado, no cruza por delante del texto que entra: se desvanece en su lado
+      // y reaparece en el contrario. Si sigue en el mismo lado, se desliza.
+      const switchesSide = (from(prevAt).x - 0.5) * (pin.x - 0.5) < 0;
+      segments.push({
+        a: prevAt,
+        b: a,
+        f: switchesSide
+          ? (u, y) => {
+              const q = u < 0.5 ? from(y) : pin;
+              return { ...q, o: q.o * Math.abs(1 - 2 * u) };
+            }
+          : (u, y) => mix(from(y), pin, smooth(u)),
+      });
       segments.push({ a, b, f: (u) => mix(pin, out, u) });
       prevAt = b;
       prev = () => out;

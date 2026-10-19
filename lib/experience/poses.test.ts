@@ -74,6 +74,21 @@ describe("buildSegments", () => {
     expect(p2.y).toBe(0.25);
   });
 
+  it("en escritorio el bote nunca cruza visible de un lado al otro entre secciones", () => {
+    const L = layout(false);
+    const { segments } = buildSegments(L);
+    for (let i = 1; i < L.sections.length; i++) {
+      // tramo entre el final de una sección y el momento en que la siguiente queda fija
+      const from = L.sections[i - 1].top + L.sections[i - 1].height - VH * 0.8;
+      const to = L.sections[i].top - VH * 0.35;
+      for (let y = from; y <= to; y += 5) {
+        const p = poseAt(segments, y);
+        // por el centro de la pantalla (donde está el texto de las dos secciones) solo pasa invisible
+        if (Math.abs(p.x - 0.5) < 0.2) expect(p.o).toBeLessThan(0.05);
+      }
+    }
+  });
+
   it("en escritorio la portada deja el titular a la izquierda del bote", () => {
     const { segments } = buildSegments(layout(false));
     const p = poseAt(segments, 0);
