@@ -154,3 +154,27 @@ export const etiquetaBote = {
   formato: "750 ml", // TECNAN (formato sin decidir)
   origen: "Navarra",
 };
+
+/** Cinta en movimiento entre la demo y el problema (tipos de mancha). */
+export const cinta = ["Vino", "Café", "Zumo", "Maquillaje", "Cremas", "Salsas"]; // TECNAN (¿repele grasa?)
+
+/** Banda que se abre a pantalla completa después de la demo. */
+export const banda = {
+  antetitulo: "Piloto gratuito para hoteles",
+  titular: ["¿Lo probamos en ", { g: "tu hotel?" }] as Rich,
+  texto: "Tratamos tres habitaciones y medimos durante 30 días cuántas manchas se quedan en gotas.", // PILOTO
+};
+
+/** Pasos del piloto (lista grande fija con scroll). */
+export const pasosPiloto = {
+  antetitulo: "Cómo funciona el piloto",
+  pasos: [
+    { titulo: "Visitamos el hotel", texto: "Elegimos contigo tres habitaciones y las piezas que se van a tratar." }, // PILOTO
+    { titulo: "Tratamos las piezas", texto: "Nuestro equipo aplica INTACTA. Vuestra rutina de limpieza no cambia." }, // PILOTO
+    { titulo: "30 días de uso", texto: "Huéspedes reales. Se apunta cada mancha y el tiempo que lleva quitarla." }, // PILOTO
+    { titulo: "Te damos los datos", texto: "Un informe que compara las habitaciones tratadas con las que no." }, // PILOTO
+  ],
+};
+
+/** Sello giratorio junto a la portada. */
+export const sello = "Piloto gratuito · Para hoteles · ";

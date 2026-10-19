@@ -1,35 +1,35 @@
 import { piloto } from "@/content/textos";
 import { LeadForm } from "../LeadForm";
-import { Rich } from "../Rich";
+import { Drops } from "../motion/Drops";
+import { Fold } from "../motion/Fold";
+import { RollingNumber } from "../motion/RollingNumber";
 
 export function Pilot() {
   const p = piloto;
   return (
     <section className="sec pilot" id="piloto" data-pose="pilot" aria-labelledby="pilot-t">
+      <Drops variant="float" />
       <div className="slot" aria-hidden="true" />
       <div className="wrap">
         <div className="side-l blk">
-          <span className="mono kicker">{p.antetitulo}</span>
-          <h2 className="display h2" id="pilot-t">
-            <Rich text={p.titular} />
-          </h2>
+          <span className="mono kicker" data-reveal>
+            {p.antetitulo}
+          </span>
+          <Fold text={p.titular} id="pilot-t" className="h2" />
           <ul className="nums">
             {p.cifras.map((c) => (
               <li key={c.texto} className="num">
-                <strong>
-                  {c.valor}
-                  {c.sufijo && <small>{c.sufijo}</small>}
-                </strong>
+                <RollingNumber value={c.valor} suffix={c.sufijo} />
                 <span>{c.texto}</span>
               </li>
             ))}
           </ul>
-          <p className="report">{p.informe}</p>
+          <p className="report" data-reveal>{p.informe}</p>
           <div className="formbox">
-            <h3 className="display">
-              <Rich text={p.formTitular} />
-            </h3>
-            <LeadForm />
+            <Fold as="h3" text={p.formTitular} />
+            <div data-reveal>
+              <LeadForm />
+            </div>
           </div>
         </div>
       </div>

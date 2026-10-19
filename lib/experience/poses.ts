@@ -35,6 +35,7 @@ const DESKTOP = {
     problem: { x: 0.8, y: 0.52, s: 0.62, rx: 0.05, ry0: 0.3, ry1: 1.3, rz: -0.12, o: 1 },
     how: { x: 0.2, y: 0.5, s: 0.6, rx: 0.05, ry0: 2.3, ry1: 3.3, rz: 0.14, o: 1 },
     where: { x: 0.82, y: 0.5, s: 0.52, rx: 0.05, ry0: 3.9, ry1: 4.9, rz: -0.08, o: 1 },
+    steps: { x: 0.82, y: 0.52, s: 0.6, rx: 0.05, ry0: 4.9, ry1: TAU - 0.6, rz: 0.1, o: 1 },
     pilot: { x: 0.79, y: 0.52, s: 0.82, rx: 0.04, ry0: TAU - 0.6, ry1: TAU - 0.3, rz: -0.1, o: 1 },
   } as Record<string, SectionPose>,
 };
@@ -51,6 +52,7 @@ const MOBILE = {
     problem: { x: 0.5, y: 0, s: 0.26, rx: 0.05, ry0: 0.3, ry1: 1.3, rz: -0.1, o: 1 },
     how: { x: 0.5, y: 0, s: 0.26, rx: 0.05, ry0: 2.3, ry1: 3.3, rz: 0.1, o: 1 },
     where: { x: 0.5, y: 0, s: 0.26, rx: 0.05, ry0: 3.9, ry1: 4.9, rz: -0.08, o: 1 },
+    steps: { x: 0.5, y: 0, s: 0.26, rx: 0.05, ry0: 4.9, ry1: TAU - 0.6, rz: 0.08, o: 1 },
     pilot: { x: 0.5, y: 0, s: 0.28, rx: 0.04, ry0: TAU - 0.6, ry1: TAU - 0.3, rz: -0.08, o: 1 },
   } as Record<string, SectionPose>,
 };

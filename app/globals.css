@@ -14,6 +14,7 @@
   --f-mono: var(--font-plex-mono), ui-monospace, Menlo, Consolas, monospace;
   --gut: clamp(16px, 4vw, 48px);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   color-scheme: light;
 }
 
@@ -248,12 +249,19 @@ a {
   overflow-x: visible;
   overflow-y: clip;
 }
-.hero-type .ln span {
+.hero-type .ln > span {
   display: block;
   animation: rise 1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
-.hero-type .ln:nth-child(2) span {
+.hero-type .ln:nth-child(3) > span {
   animation-delay: 0.14s;
+}
+.hero-type .w {
+  display: inline-block;
+  white-space: nowrap;
+}
+.hero-type .vp {
+  display: inline-block;
 }
 @keyframes rise {
   from {
@@ -855,7 +863,7 @@ a {
   color: var(--green);
   margin-left: 0.06em;
 }
-.num span {
+.num > span {
   color: var(--muted);
   font-size: 16px;
 }
@@ -980,7 +988,7 @@ footer .wrap {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-type .ln span,
+  .hero-type .ln > span,
   .hint i {
     animation: none;
   }
@@ -995,4 +1003,524 @@ ul.where {
   list-style: none;
   padding: 0;
   margin-bottom: 0;
+}
+
+/* ════════════════════════════════════════════════════════════
+   FASE 2 · ANIMACIONES Y MICROINTERACCIONES
+   (inventario de Train with Jaime, Estafeta Gourmet y La Nevera)
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Botones: pulsación, onda (magnetic.ts) y variante clara ── */
+.btn {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s,
+    scale 160ms var(--ease-out);
+}
+.btn:active {
+  scale: 0.97;
+}
+.ripple {
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  background: currentColor;
+  pointer-events: none;
+}
+.btn-light {
+  background: var(--mint);
+  color: var(--ink);
+  border-color: var(--mint);
+}
+@media (hover: hover) and (pointer: fine) {
+  .btn-light:hover {
+    background: #fff;
+    border-color: #fff;
+  }
+}
+
+/* ── Cabecera: sólida al bajar (scroll-effects.ts) ── */
+.nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.97);
+  border-bottom: 1px solid var(--line);
+  opacity: 0;
+  transition: opacity 300ms var(--ease-out);
+  pointer-events: none;
+}
+.nav.is-solid::before {
+  opacity: 1;
+}
+.nav .wrap {
+  position: relative;
+}
+@media (hover: hover) and (pointer: fine) {
+  .nav::before {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(14px) saturate(1.4);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  }
+}
+
+/* ── Reveal (reveal.ts): sube y aparece, una sola vez ── */
+.reveal-on [data-reveal]:not([data-reveal="fold"], [data-reveal="roll"]),
+.reveal-on [data-reveal-stagger] > * {
+  transition:
+    opacity 500ms var(--ease-out),
+    transform 500ms var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 70ms);
+}
+.reveal-on [data-reveal]:not([data-reveal="fold"], [data-reveal="roll"]):not([data-visible]),
+.reveal-on [data-reveal-stagger]:not([data-visible]) > * {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+}
+
+/* ── Titulares que se despliegan letra a letra (Fold.tsx) ── */
+.fold .w,
+.fold .ch {
+  display: inline-block;
+}
+.fold .w {
+  white-space: nowrap;
+}
+.reveal-on .fold .ch {
+  transform-origin: 50% 0;
+  transition:
+    transform 700ms var(--ease-out),
+    opacity 300ms linear;
+  transition-delay: calc(var(--i) * 26ms);
+}
+.reveal-on .fold:not([data-visible]) .ch {
+  transform: perspective(600px) rotateX(-88deg);
+  opacity: 0;
+}
+
+/* ── Números que ruedan (RollingNumber.tsx) ── */
+.roll-digits {
+  display: inline-flex;
+  align-items: baseline;
+}
+.roll-d {
+  position: relative;
+  display: inline-block;
+  height: 0.9em;
+  line-height: 0.9;
+  overflow: hidden;
+  vertical-align: top;
+}
+.roll-final {
+  display: block;
+  visibility: hidden;
+}
+.roll-col {
+  position: absolute;
+  inset: 0 0 auto 0;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  transform: translate3d(0, calc(var(--to) * -0.9em), 0);
+}
+.roll-col span {
+  display: block;
+  height: 0.9em;
+}
+.reveal-on .roll-col {
+  transition: transform calc(1.5s + var(--n) * 0.22s) cubic-bezier(0.16, 0.84, 0.3, 1) calc(var(--n) * 70ms);
+}
+.reveal-on .roll:not([data-visible]) .roll-col {
+  transform: none;
+}
+
+/* ── Cinta de manchas (Marquee.tsx) ── */
+.mq {
+  position: relative;
+  z-index: 3;
+  background: var(--bg);
+  border-block: 1px solid var(--line);
+  overflow: hidden;
+  padding-block: clamp(18px, 2.4vw, 30px);
+}
+.mq-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 38s linear infinite;
+}
+.mq-row {
+  display: flex;
+  align-items: center;
+  gap: clamp(22px, 3vw, 44px);
+  padding: 0 clamp(22px, 3vw, 44px) 0 0;
+  margin: 0;
+  list-style: none;
+}
+.mq-row li {
+  display: flex;
+  align-items: center;
+  gap: clamp(22px, 3vw, 44px);
+  white-space: nowrap;
+}
+.mq-row .display {
+  font-size: clamp(2.2rem, 5vw, 4.6rem);
+  line-height: 1;
+}
+.mq-row li:nth-child(odd) .display {
+  color: var(--green);
+}
+.mq-row i {
+  width: 12px;
+  height: 11px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff 0 18%, #b9e3cc 40%, #5fae86 100%);
+}
+@keyframes marquee {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .mq:hover .mq-track {
+    animation-play-state: paused;
+  }
+}
+
+/* ── Banda que se abre a pantalla completa (Band.tsx) ── */
+.xp {
+  position: relative;
+  z-index: 3;
+}
+.xp-frame {
+  position: relative;
+  background: var(--ink);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  padding-block: clamp(90px, 12vw, 170px);
+  overflow: hidden;
+}
+.xp-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  text-align: center;
+}
+.xp .kicker {
+  color: var(--mint);
+  margin: 0;
+}
+.xp-title {
+  font-size: clamp(3.4rem, 9vw, 9rem);
+  color: #fff;
+  max-width: 12ch;
+}
+.xp-title .g {
+  color: var(--mint);
+}
+.xp-text {
+  margin: 0;
+  max-width: 46ch;
+  color: #cfe3d8;
+  font-size: clamp(17px, 1.5vw, 20px);
+}
+.fx-on .xp {
+  height: 230vh;
+}
+.fx-on .xp-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+}
+.fx-on .xp-frame {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  clip-path: inset(21% 29% round 28px);
+}
+.fx-on .xp-content {
+  opacity: 0;
+}
+@media (max-width: 760px) {
+  .fx-on .xp {
+    height: 200vh;
+  }
+  .fx-on .xp-frame {
+    clip-path: inset(24% 8% round 20px);
+  }
+}
+
+/* ── Pasos del piloto: lista fija con scroll (Steps.tsx) ── */
+.steps {
+  position: relative;
+  z-index: 3;
+  border-top: 1px solid var(--line);
+}
+/* en móvil el texto va a todo el ancho: fondo opaco para que el bote no asome por detrás */
+@media (max-width: 760px) {
+  .steps-stage {
+    background: var(--bg);
+  }
+}
+.steps-stage {
+  padding-block: clamp(90px, 12vw, 170px);
+}
+.steps .kicker {
+  margin: 0 0 32px;
+  font-weight: 400;
+}
+.steps-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: clamp(2.4rem, 5.6vw, 5.6rem);
+}
+.step {
+  display: grid;
+  grid-template-columns: 1.6em 1fr;
+  column-gap: 0.2em;
+  align-content: start;
+  height: calc(1.2em + 70px);
+  transform-origin: 0 30%;
+}
+.step-n {
+  grid-row: span 2;
+  font-size: 12px;
+  color: var(--green);
+  padding-top: 1.2em;
+}
+.step-t {
+  white-space: nowrap;
+  line-height: 1;
+  color: rgba(15, 59, 44, var(--fill, 1));
+  -webkit-text-stroke: 1px var(--ink);
+}
+.step-d {
+  margin-top: 12px;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--muted);
+  max-width: 44ch;
+  opacity: var(--fill, 1);
+}
+.fx-on .steps {
+  height: calc(var(--n) * 55vh + 100vh);
+}
+.fx-on .steps-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  padding: 0;
+}
+.fx-on .steps-stage .wrap {
+  position: relative;
+  height: 100%;
+}
+.fx-on .steps .kicker {
+  position: absolute;
+  top: calc(96px + env(safe-area-inset-top, 0px));
+}
+.fx-on .steps-list {
+  position: absolute;
+  left: var(--gut);
+  right: 40%;
+  top: 52%;
+}
+@media (max-width: 760px) {
+  .fx-on .steps {
+    height: calc(var(--n) * 55vh + 100vh + 34svh);
+  }
+  .fx-on .steps-list {
+    right: var(--gut);
+  }
+}
+
+/* ── Sello giratorio (Stamp.tsx) ── */
+.stamp {
+  position: absolute;
+  z-index: 3;
+  left: 36vw;
+  bottom: 15vh;
+  width: clamp(104px, 9vw, 132px);
+  aspect-ratio: 1;
+  pointer-events: none;
+}
+.stamp svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.stamp-bg {
+  fill: #fff;
+  stroke: var(--line);
+}
+.stamp text {
+  font: 500 13.5px var(--f-mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  fill: var(--ink);
+}
+.stamp-ring {
+  transform-origin: 100px 100px;
+  animation: spin 28s linear infinite;
+}
+.stamp-drop {
+  fill: var(--green);
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (max-width: 760px) {
+  .stamp {
+    display: none;
+  }
+}
+
+/* ── Gotitas decorativas (Drops.tsx) ── */
+.drops {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.drop {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff 0 18%, #b9e3cc 40%, #5fae86 100%);
+  box-shadow: 0 3px 6px rgba(15, 59, 44, 0.18);
+}
+.xp .drop {
+  box-shadow: none;
+  opacity: 0.55;
+}
+@supports (animation-timeline: scroll()) {
+  .drops-scroll .drop {
+    animation: linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 100vh;
+  }
+  .drops-scroll .drift-up {
+    animation-name: drift-up;
+  }
+  .drops-scroll .drift-down {
+    animation-name: drift-down;
+  }
+}
+@keyframes drift-up {
+  to {
+    transform: translate3d(0, -90px, 0);
+  }
+}
+@keyframes drift-down {
+  to {
+    transform: translate3d(0, 60px, 0);
+  }
+}
+.drops-float .float {
+  animation: float-drift 18s ease-in-out infinite alternate;
+}
+.drops-float .b {
+  animation-duration: 22s;
+  animation-delay: -6s;
+}
+.drops-float .c {
+  animation-duration: 26s;
+  animation-delay: -11s;
+}
+@keyframes float-drift {
+  50% {
+    transform: translate3d(12px, -18px, 0);
+  }
+  100% {
+    transform: translate3d(-8px, 10px, 0);
+  }
+}
+/* el contenido del piloto va por encima del bote (z 2) y de las gotitas */
+.pilot > .wrap {
+  position: relative;
+  z-index: 3;
+}
+
+/* ── Diagramas: se levantan un poco al pasar el ratón ── */
+@media (hover: hover) and (pointer: fine) {
+  .fig svg {
+    transition:
+      transform 250ms var(--ease-out),
+      box-shadow 250ms var(--ease-out);
+  }
+  .fig:hover svg {
+    transform: translate3d(0, -4px, 0);
+    box-shadow: 0 18px 30px -18px rgba(15, 59, 44, 0.35);
+  }
+}
+
+/* ── Movimiento reducido: menos y más suave, no cero ──
+   Se quedan los fundidos (ayudan a leer); se quitan desplazamientos, giros y bucles. */
+@media (prefers-reduced-motion: reduce) {
+  .reveal-on [data-reveal]:not([data-reveal="fold"], [data-reveal="roll"]),
+  .reveal-on [data-reveal-stagger] > *,
+  .reveal-on .fold .ch {
+    transform: none !important;
+    transition: opacity 300ms ease;
+    transition-delay: 0ms;
+  }
+  .reveal-on .roll-col {
+    transition: none;
+  }
+  .reveal-on .roll:not([data-visible]) .roll-col {
+    transform: translate3d(0, calc(var(--to) * -0.9em), 0);
+  }
+  .mq-track {
+    animation: none;
+    width: auto;
+    justify-content: center;
+  }
+  .mq-row {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0 var(--gut);
+  }
+  .mq-row[aria-hidden] {
+    display: none;
+  }
+  .stamp-ring,
+  .drops .drop {
+    animation: none !important;
+  }
+  .btn {
+    transition:
+      background 0.2s,
+      color 0.2s,
+      border-color 0.2s;
+  }
+  .btn:active {
+    scale: none;
+  }
+}
+
+/* Pasos sin la animación fija (sin JS o con movimiento reducido): lista normal que puede partir líneas. */
+html:not(.fx-on) .step {
+  height: auto;
+  margin-bottom: 28px;
+}
+html:not(.fx-on) .step-t {
+  white-space: normal;
+}
+@media (max-width: 760px) {
+  .steps-list {
+    font-size: 8.2vw;
+  }
 }

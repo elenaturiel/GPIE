@@ -3,6 +3,7 @@ import { demo as demoText } from "@/content/textos";
 import type { Bottle } from "./bottle/scene";
 import { clamp } from "./math";
 import { buildSegments, DEMO, poseAt, type Pose, type Segment } from "./poses";
+import { ScrollEffects } from "./scroll-effects";
 import { phaseAt, StainDemo } from "./stain-demo";
 
 const MOBILE_MAX = 760;
@@ -41,6 +42,8 @@ export function startExperience(): () => void {
     treated: demoText.telaTratada,
   });
 
+  const effects = new ScrollEffects(reduce || posterMode);
+
   let VW = innerWidth;
   let VH = innerHeight;
   let mobile = VW <= MOBILE_MAX;
@@ -72,6 +75,7 @@ export function startExperience(): () => void {
     specsRange = built.specs;
     demoRange = built.demo;
     bottle?.resize(VW, VH, mobile);
+    effects.layout(VH, mobile);
     lastT = -1;
     lastPose = null;
   }
@@ -116,6 +120,7 @@ export function startExperience(): () => void {
     prevNow = now;
     lenis?.raf(now);
     const y = scrollY;
+    effects.update(y);
 
     // especificaciones: aparecen una a una (en móvil solo se ve la actual)
     const u = clamp((y - specsRange[0]) / Math.max(1, specsRange[1] - specsRange[0]));

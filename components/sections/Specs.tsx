@@ -1,5 +1,5 @@
 import { especificaciones } from "@/content/textos";
-import { Rich } from "../Rich";
+import { Fold } from "../motion/Fold";
 
 const PLACES = ["r c1", "l c2", "r c3", "l c4"];
 
@@ -10,9 +10,7 @@ export function Specs() {
       <div className="sstage">
         <div className="stitle blk">
           <span className="mono kicker">{e.antetitulo}</span>
-          <h2 className="display h2" id="specs-t">
-            <Rich text={e.titular} />
-          </h2>
+          <Fold text={e.titular} id="specs-t" className="h2" />
         </div>
         {e.puntos.map((p, i) => (
           <div key={p.titulo} className={`call ${PLACES[i]} blk`}>

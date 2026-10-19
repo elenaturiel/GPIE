@@ -1,5 +1,5 @@
 import { comoFunciona } from "@/content/textos";
-import { Rich } from "../Rich";
+import { Fold } from "../motion/Fold";
 
 /** Corte del tejido: tres filas de fibras; sin tratar el líquido se mete, tratada la gota queda encima. */
 function Fibers({ treated }: { treated: boolean }) {
@@ -59,12 +59,10 @@ export function How() {
       <div className="slot" aria-hidden="true" />
       <div className="wrap">
         <div className="side-r blk">
-          <span className="mono kicker">{c.antetitulo}</span>
-          <h2 className="display h2" id="how-t">
-            <Rich text={c.titular} />
-          </h2>
-          <p className="intro">{c.intro}</p>
-          <div className="how">
+          <span className="mono kicker" data-reveal>{c.antetitulo}</span>
+          <Fold text={c.titular} id="how-t" className="h2" />
+          <p className="intro" data-reveal>{c.intro}</p>
+          <div className="how" data-reveal-stagger>
             {[c.sinTratar, c.tratada].map((f, i) => (
               <figure key={f.titulo} className="fig">
                 <Fibers treated={i === 1} />

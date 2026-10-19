@@ -3,11 +3,14 @@ import { Experience } from "@/components/Experience";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Demo } from "@/components/sections/Demo";
+import { Band } from "@/components/sections/Band";
 import { Hero } from "@/components/sections/Hero";
+import { Marquee } from "@/components/sections/Marquee";
 import { How } from "@/components/sections/How";
 import { Pilot } from "@/components/sections/Pilot";
 import { Problem } from "@/components/sections/Problem";
 import { Specs } from "@/components/sections/Specs";
+import { Steps } from "@/components/sections/Steps";
 import { Where } from "@/components/sections/Where";
 
 export default function Home() {
@@ -22,9 +25,12 @@ export default function Home() {
         <Hero />
         <Specs />
         <Demo />
+        <Marquee />
+        <Band />
         <Problem />
         <How />
         <Where />
+        <Steps />
         <Pilot />
       </main>
       <Footer />

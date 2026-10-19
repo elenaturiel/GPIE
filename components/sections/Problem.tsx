@@ -1,5 +1,5 @@
 import { problema } from "@/content/textos";
-import { Rich } from "../Rich";
+import { Fold } from "../motion/Fold";
 
 const n = (i: number) => String(i + 1).padStart(2, "0");
 
@@ -10,12 +10,10 @@ export function Problem() {
       <div className="slot" aria-hidden="true" />
       <div className="wrap">
         <div className="side-l blk">
-          <span className="mono kicker">{p.antetitulo}</span>
-          <h2 className="display h2" id="problem-t">
-            <Rich text={p.titular} />
-          </h2>
-          <p className="intro">{p.intro}</p>
-          <div className="compare">
+          <span className="mono kicker" data-reveal>{p.antetitulo}</span>
+          <Fold text={p.titular} id="problem-t" className="h2" />
+          <p className="intro" data-reveal>{p.intro}</p>
+          <div className="compare" data-reveal-stagger>
             <div className="col">
               <h3>
                 {p.sin.titulo} <small>{p.sin.resumen}</small>
