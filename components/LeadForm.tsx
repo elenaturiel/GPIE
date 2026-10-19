@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import { cta } from "@/content/textos";
-
-// Rangos sin solapes y sin opción preseleccionada (no sesga los datos).
-const ROOMS = ["Menos de 50", "50–149", "150–299", "300 o más"];
+import { formatoEuros, RANGOS_HABITACIONES, rangoHabitaciones } from "@/lib/calculadora/calculo";
+import { borrarEstimacion, useEstimacion } from "@/lib/calculadora/store";
 
 /**
  * Formulario del piloto. FASE 1: solo la parte visual del prototipo; todavía no guarda nada.
@@ -14,6 +13,10 @@ const ROOMS = ["Menos de 50", "50–149", "150–299", "300 o más"];
 export function LeadForm() {
   const [error, setError] = useState("");
   const [sentTo, setSentTo] = useState("");
+  const estimacion = useEstimacion();
+  // Sin opción preseleccionada (no sesga los datos), salvo que venga de la calculadora.
+  const [roomsChoice, setRoomsChoice] = useState<string | null>(null);
+  const rooms = roomsChoice ?? (estimacion ? rangoHabitaciones(estimacion.entradas.habitaciones) : "");
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -41,6 +44,17 @@ export function LeadForm() {
 
   return (
     <form className="lead-form" noValidate onSubmit={onSubmit}>
+      {estimacion && (
+        <div className="estim full" role="status">
+          <p>
+            Tu estimación irá con la solicitud: <b>{estimacion.entradas.habitaciones} habitaciones</b>, ahorro estimado de{" "}
+            <b>{formatoEuros(estimacion.resultado.ahorro)} al año</b> con valores de ejemplo. En el piloto lo medimos de verdad.
+          </p>
+          <button type="button" className="estim-x" onClick={borrarEstimacion}>
+            No incluir
+          </button>
+        </div>
+      )}
       <div className="field">
         <label htmlFor="f-name">Nombre</label>
         <input id="f-name" name="name" autoComplete="name" placeholder="Ana García" required />
@@ -55,11 +69,11 @@ export function LeadForm() {
       </div>
       <div className="field">
         <label htmlFor="f-rooms">Habitaciones</label>
-        <select id="f-rooms" name="rooms" defaultValue="">
+        <select id="f-rooms" name="rooms" value={rooms} onChange={(e) => setRoomsChoice(e.target.value)}>
           <option value="" disabled>
             Elige un rango
           </option>
-          {ROOMS.map((r) => (
+          {RANGOS_HABITACIONES.map((r) => (
             <option key={r}>{r}</option>
           ))}
         </select>

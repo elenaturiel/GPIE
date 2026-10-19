@@ -178,3 +178,26 @@ export const pasosPiloto = {
 
 /** Sello giratorio junto a la portada. */
 export const sello = "Piloto gratuito · Para hoteles · ";
+
+/** Calculadora de ahorro. */
+export const calculadora = {
+  antetitulo: "Calculadora",
+  titular: ["Calcula tu ", { g: "ahorro." }] as Rich,
+  intro: "Mueve los valores hasta que se parezcan a tu hotel. Compara lo que cuesta hoy gestionar las manchas con lo que costaría con INTACTA.",
+  periodo: { anual: "Anual", mensual: "Mensual" },
+  ahorro: "Ahorro estimado",
+  porAno: "al año",
+  porMes: "al mes",
+  hoy: "Coste actual",
+  con: "Con INTACTA",
+  partidas: { limpieza: "Limpieza", sustituciones: "Sustituciones", personal: "Horas de personal", tratamiento: "Tratamiento INTACTA" },
+  retorno: "Retorno de la inversión",
+  recuperas: "Recuperas el tratamiento en",
+  meses: "meses",
+  noRecupera: "No se recupera con estos valores",
+  diasFuera: "Días de pieza fuera de servicio al año",
+  cta: "Comprueba estas cifras en un piloto gratuito",
+  aviso: "Estimación orientativa con valores de ejemplo. El piloto mide el ahorro real en tu hotel.",
+  supuestosTitulo: "Supuestos de INTACTA usados (provisionales)",
+  supuestosNota: "Pendientes de confirmar con Tecnan y con los datos del piloto.",
+};

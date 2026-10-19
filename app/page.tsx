@@ -4,6 +4,7 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Demo } from "@/components/sections/Demo";
 import { Band } from "@/components/sections/Band";
+import { Calc } from "@/components/sections/Calc";
 import { Hero } from "@/components/sections/Hero";
 import { Marquee } from "@/components/sections/Marquee";
 import { How } from "@/components/sections/How";
@@ -30,6 +31,7 @@ export default function Home() {
         <Problem />
         <How />
         <Where />
+        <Calc />
         <Steps />
         <Pilot />
       </main>
