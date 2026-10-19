@@ -28,7 +28,7 @@ export function Pilot() {
           <div className="formbox">
             <Fold as="h3" text={p.formTitular} />
             <div data-reveal>
-              <LeadForm />
+              <LeadForm origen="piloto" />
             </div>
           </div>
         </div>

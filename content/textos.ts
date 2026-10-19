@@ -201,3 +201,34 @@ export const calculadora = {
   supuestosTitulo: "Supuestos de INTACTA usados (provisionales)",
   supuestosNota: "Pendientes de confirmar con Tecnan y con los datos del piloto.",
 };
+
+/** Formulario del piloto. */
+export const formulario = {
+  titularModal: ["Solicita tu ", { g: "piloto gratuito." }] as Rich,
+  campos: {
+    nombre: "Nombre",
+    cargo: "Cargo",
+    hotel: "Hotel",
+    ciudad: "Ciudad",
+    habitaciones: "Habitaciones",
+    email: "Email",
+    telefono: "Teléfono (opcional)",
+  },
+  ejemplos: {
+    nombre: "Ana García",
+    cargo: "Gobernanta, director/a…",
+    hotel: "Nombre del hotel",
+    ciudad: "Pamplona",
+    email: "ana@hotel.com",
+    telefono: "600 000 000",
+  },
+  elegirRango: "Elige un rango",
+  enviar: "Solicitar piloto gratuito",
+  enviando: "Enviando…",
+  graciasAntetitulo: "Solicitud recibida",
+  gracias: "Gracias",
+  // Mensaje honesto: es un piloto en selección, no un producto a la venta.
+  graciasTexto: "Estamos seleccionando los primeros hoteles para el piloto. Te escribimos en 48 horas.",
+  errorEnvio: "No hemos podido enviar tu solicitud. Inténtalo de nuevo en unos minutos.",
+  cerrar: "Cerrar",
+};

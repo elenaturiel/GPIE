@@ -221,6 +221,12 @@ export function startExperience(): () => void {
     lenis = new LenisCtor({ autoRaf: false, anchors: true, lerp: 0.12 });
   }
 
+  // con el formulario en ventana abierto, la página de detrás no se desplaza
+  const onModalOpen = () => lenis?.stop();
+  const onModalClose = () => lenis?.start();
+  addEventListener("intacta:modal-open", onModalOpen);
+  addEventListener("intacta:modal-close", onModalClose);
+
   let resizeTimer = 0;
   const onResize = () => {
     clearTimeout(resizeTimer);
@@ -251,6 +257,8 @@ export function startExperience(): () => void {
     disposed = true;
     cancelAnimationFrame(raf);
     removeEventListener("resize", onResize);
+    removeEventListener("intacta:modal-open", onModalOpen);
+    removeEventListener("intacta:modal-close", onModalClose);
     ro.disconnect();
     lenis?.destroy();
     bottle?.dispose();

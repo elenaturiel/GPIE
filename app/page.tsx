@@ -1,6 +1,7 @@
 import { BottleLayer } from "@/components/BottleLayer";
 import { Experience } from "@/components/Experience";
 import { Footer } from "@/components/Footer";
+import { LeadDialog } from "@/components/LeadDialog";
 import { Header } from "@/components/Header";
 import { Demo } from "@/components/sections/Demo";
 import { Band } from "@/components/sections/Band";
@@ -36,6 +37,7 @@ export default function Home() {
         <Pilot />
       </main>
       <Footer />
+      <LeadDialog />
       <Experience />
     </>
   );
