@@ -1,4 +1,4 @@
-import { RANGOS_HABITACIONES } from "@/lib/calculadora/calculo";
+import { RANGOS_HABITACIONES } from "./rangos";
 import { ORIGENES } from "@/lib/metrics/stats";
 import { USOS } from "./usos";
 
@@ -21,20 +21,10 @@ export type LeadInput = {
   aceptaComunicaciones?: unknown;
   origen?: unknown;
   utm?: unknown;
-  calculadora?: unknown;
   /** Trampa para bots: campo oculto que una persona deja vacío. */
   web?: unknown;
   /** Milisegundos desde que se mostró el formulario hasta que se envió. */
   tiempo?: unknown;
-};
-
-export type CalcResumen = {
-  habitaciones: number;
-  piezas: number;
-  ahorroAnual: number;
-  costeActual: number;
-  costeIntacta: number;
-  entradas: Record<string, number>;
 };
 
 export type Lead = {
@@ -49,7 +39,6 @@ export type Lead = {
   aceptaComunicaciones: boolean;
   origen: string;
   utm: { source: string; medium: string; campaign: string };
-  calculadora: CalcResumen | null;
 };
 
 export type Resultado =
@@ -74,26 +63,6 @@ const texto = (v: unknown, max: number) =>
 
 const numero = (v: unknown) => (typeof v === "number" && Number.isFinite(v) ? v : null);
 
-function calculadora(v: unknown): CalcResumen | null {
-  if (!v || typeof v !== "object") return null;
-  const c = v as Record<string, unknown>;
-  const campos = ["habitaciones", "piezas", "ahorroAnual", "costeActual", "costeIntacta"] as const;
-  const out: Partial<CalcResumen> = {};
-  for (const k of campos) {
-    const n = numero(c[k]);
-    if (n === null || Math.abs(n) > 1e9) return null;
-    out[k] = Math.round(n * 100) / 100;
-  }
-  const entradas: Record<string, number> = {};
-  if (c.entradas && typeof c.entradas === "object") {
-    for (const [k, val] of Object.entries(c.entradas as Record<string, unknown>).slice(0, 20)) {
-      const n = numero(val);
-      if (n !== null && /^[a-zA-Z]{1,40}$/.test(k)) entradas[k] = n;
-    }
-  }
-  return { ...(out as Omit<CalcResumen, "entradas">), entradas };
-}
-
 export function validarLead(body: LeadInput): Resultado {
   if (texto(body.web, 200) !== "") return { ok: false, bot: true };
   const tiempo = numero(body.tiempo);
@@ -111,7 +80,6 @@ export function validarLead(body: LeadInput): Resultado {
     aceptaComunicaciones: body.aceptaComunicaciones === true,
     origen: (ORIGENES as readonly string[]).includes(texto(body.origen, 20)) ? texto(body.origen, 20) : "desconocido",
     utm: { source: "", medium: "", campaign: "" },
-    calculadora: calculadora(body.calculadora),
   };
   if (body.utm && typeof body.utm === "object") {
     const u = body.utm as Record<string, unknown>;

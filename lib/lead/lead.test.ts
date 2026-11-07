@@ -25,7 +25,6 @@ describe("validarLead", () => {
     expect(r.lead.nombre).toBe("Ana García");
     expect(r.lead.email).toBe("ana@hotel.com");
     expect(r.lead.aceptaComunicaciones).toBe(false);
-    expect(r.lead.calculadora).toBeNull();
   });
 
   it("exige la casilla de privacidad marcada (no vale un texto 'true')", () => {
@@ -71,12 +70,9 @@ describe("validarLead", () => {
     expect(r.ok && r.lead.origen).toBe("desconocido");
   });
 
-  it("guarda la estimación de la calculadora solo si los números son válidos", () => {
-    const calc = { habitaciones: 80, piezas: 200, ahorroAnual: 601.234, costeActual: 4362, costeIntacta: 3761, entradas: { habitaciones: 80, "mal-nombre": 3, x: "texto" } };
-    const r = validarLead({ ...valido, calculadora: calc });
-    expect(r.ok && r.lead.calculadora).toEqual({ habitaciones: 80, piezas: 200, ahorroAnual: 601.23, costeActual: 4362, costeIntacta: 3761, entradas: { habitaciones: 80 } });
-    const r2 = validarLead({ ...valido, calculadora: { ...calc, ahorroAnual: "mucho" } });
-    expect(r2.ok && r2.lead.calculadora).toBeNull();
+  it("acepta las dos puertas falsas como origen", () => {
+    const r = validarLead({ ...valido, origen: "ahorro" });
+    expect(r.ok && r.lead.origen).toBe("ahorro");
   });
 });
 
@@ -100,7 +96,7 @@ describe("crearLimitador", () => {
 process.env.STORE = "memory";
 import { kv, KvNoConfigurado } from "@/lib/store/kv";
 import { borrarInteresado, guardarInteresado, listarInteresados, nuevoInteresado } from "./repo";
-import { campo, leerTotales, sumar, sumaTipo } from "@/lib/metrics/stats";
+import { campo, leerTotales, puertaDe, sumar, sumaTipo } from "@/lib/metrics/stats";
 
 describe("interesados en la base de datos", () => {
   const r = validarLead(valido);
@@ -137,6 +133,8 @@ describe("contadores del embudo", () => {
     expect(campo("cta", "portada")).toBe("cta.portada");
     expect(campo("cta", "otra-web")).toBeNull();
     expect(campo("borrar-todo", "portada")).toBeNull();
+    expect(campo("cta", "ahorro")).toBe("cta.ahorro");
+    expect(campo("calculadora")).toBeNull(); // ya no existe
   });
 
   it("suma por día y totaliza", async () => {
@@ -168,5 +166,12 @@ describe("kv", () => {
     expect(call!.url).toBe("https://eu1.upstash.io/pipeline");
     expect((call!.init.headers as Record<string, string>).Authorization).toBe("Bearer tok");
     expect(JSON.parse(String(call!.init.body))).toEqual([["HINCRBY", "k", "f", "1"]]);
+  });
+});
+
+describe("puertas falsas", () => {
+  it("el botón de ahorro va a «ahorro» y el resto a «piloto»", () => {
+    expect(puertaDe("ahorro")).toBe("ahorro");
+    for (const o of ["cabecera", "portada", "tras-demo", "piloto", "desconocido"]) expect(puertaDe(o)).toBe("piloto");
   });
 });

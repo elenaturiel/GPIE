@@ -19,7 +19,6 @@ npm run lint && npm run typecheck
 | Qué | Archivo |
 |---|---|
 | Todos los textos de la web (y de la etiqueta del bote 3D) | `content/textos.ts` — las líneas marcadas `TECNAN` o `PILOTO` están pendientes de confirmar |
-| Supuestos de la calculadora (pendientes) | `config/calculadora.ts` |
 | Poses del bote según el scroll | `lib/experience/poses.ts` |
 | Demo de la butaca (canvas 2D) | `lib/experience/stain-demo.ts` |
 | Bote 3D (Three.js) | `lib/experience/bottle/` |
@@ -27,7 +26,6 @@ npm run lint && npm run typecheck
 | Estilos | `app/globals.css` |
 | Formulario: textos | `content/textos.ts` (`formulario`) |
 | Titular, primera capa de privacidad y casillas | `content/legal.ts` (⚠️ titular pendiente) |
-| Calculadora: valores de ejemplo y supuestos | `config/calculadora.ts` (⚠️ supuestos pendientes) |
 | Prototipo original de referencia | `intacta-landing.html` |
 
 ## Imagen del bote
@@ -40,14 +38,19 @@ Para ver el 3D en un equipo sin GPU (que normalmente usaría la imagen): `/?3d=f
 
 ## Puerta falsa, interesados y panel
 
-Todos los botones «Solicitar piloto» son una **puerta falsa**: al pulsarlos se cuenta el interés y se abre una ventana
-que dice, sin rodeos, que el piloto está en preparación y que quien quiera puede ser de los primeros dejando sus datos.
+Hay **dos puertas falsas**. Al pulsarlas se cuenta el interés y se abre una ventana que dice, sin rodeos, que aquello
+está en preparación y que quien quiera puede ser de los primeros dejando sus datos:
+
+- **Prueba piloto**: todos los botones «Solicitar piloto» (cabecera, portada, tras la demo, sección piloto).
+- **Calcular ahorro**: el botón grande «¿Quieres calcular cuánto vas a ahorrar?». No hay calculadora (no hay datos
+  reales todavía); los textos están en `content/textos.ts` (`ahorro` y `formulario`).
+
+Los datos de las dos llegan al mismo sitio, marcados con su puerta.
 
 - **Interesados** (lo que dejan en el formulario) → base de datos de la web.
-- **Contadores del embudo** (visitas, clics en «Solicitar piloto» por botón, formularios empezados, datos enviados,
-  uso de la calculadora) → la misma base de datos, como totales por día, **sin datos personales ni cookies**.
+- **Contadores del embudo** (visitas, clics por puerta y por botón, formularios empezados, datos enviados) → la misma base de datos, como totales por día, **sin datos personales ni cookies**.
 - Todo se ve en **`/panel`** (en tu dominio de Vercel), con contraseña: embudo y tasas de conversión, lista de
-  interesados, **Descargar CSV** y **Borrar** (si alguien pide que borres sus datos). Los interesados se borran solos
+  interesados con su puerta falsa y filtros, **Descargar CSV** y **Borrar** (si alguien pide que borres sus datos). Los interesados se borran solos
   a los 12 meses.
 
 ### Puesta en marcha en Vercel (una vez, ~5 minutos)

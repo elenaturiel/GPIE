@@ -181,27 +181,12 @@ export const pasosPiloto = {
 /** Sello giratorio junto a la portada. */
 export const sello = "Piloto gratuito · Para hoteles · ";
 
-/** Calculadora de ahorro. */
-export const calculadora = {
-  antetitulo: "Calculadora",
-  titular: ["Calcula tu ", { g: "ahorro." }] as Rich,
-  intro: "Mueve los valores hasta que se parezcan a tu hotel. Compara lo que cuesta hoy gestionar las manchas con lo que costaría con INTACTA.",
-  periodo: { anual: "Anual", mensual: "Mensual" },
-  ahorro: "Ahorro estimado",
-  porAno: "al año",
-  porMes: "al mes",
-  hoy: "Coste actual",
-  con: "Con INTACTA",
-  partidas: { limpieza: "Limpieza", sustituciones: "Sustituciones", personal: "Horas de personal", tratamiento: "Tratamiento INTACTA" },
-  retorno: "Retorno de la inversión",
-  recuperas: "Recuperas el tratamiento en",
-  meses: "meses",
-  noRecupera: "No se recupera con estos valores",
-  diasFuera: "Días de pieza fuera de servicio al año",
-  cta: "Comprueba estas cifras en un piloto gratuito",
-  aviso: "Estimación orientativa con valores de ejemplo. El piloto mide el ahorro real en tu hotel.",
-  supuestosTitulo: "Supuestos de INTACTA usados (provisionales)",
-  supuestosNota: "Pendientes de confirmar con el fabricante y con los datos del piloto.",
+/** Segunda puerta falsa: «¿Quieres calcular cuánto vas a ahorrar?» (sin cifras inventadas). */
+export const ahorro = {
+  antetitulo: "Calcula tu ahorro",
+  titular: ["¿Cuánto ", { g: "ahorrarías?" }] as Rich,
+  texto: "Butacas a la tintorería, piezas que se retapizan, horas de personal y habitaciones a medias. Descubre lo que te cuestan hoy las manchas y lo que podrías ahorrar con INTACTA.",
+  boton: "¿Quieres calcular cuánto vas a ahorrar?",
 };
 
 /** Formulario del piloto. */
@@ -210,6 +195,11 @@ export const formulario = {
   titularModal: ["¿Te ", { g: "interesa?" }] as Rich,
   introModal:
     "Estamos preparando un piloto gratuito con los primeros hoteles. Si te interesa, puedes ser de los primeros en probar INTACTA: déjanos tus datos y te escribimos.",
+  // Ventana de la segunda puerta falsa (botón «¿Quieres calcular cuánto vas a ahorrar?»).
+  titularAhorro: ["¿Cuánto vas a ", { g: "ahorrar?" }] as Rich,
+  introAhorro:
+    "Estamos preparando la calculadora con los datos reales de los primeros hoteles del piloto. Sé de los primeros en usarla y en probar INTACTA: déjanos tus datos y te escribimos en cuanto esté lista.",
+  graciasAhorroTexto: "Estamos preparando la calculadora con los datos del piloto. Te escribimos en cuanto esté lista.",
   usosPregunta: "¿Dónde lo usarías? (opcional)",
   campos: {
     nombre: "Nombre",

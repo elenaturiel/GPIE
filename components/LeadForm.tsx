@@ -3,8 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { casillas, primeraCapa } from "@/content/legal";
 import { formulario as F } from "@/content/textos";
-import { formatoEuros, RANGOS_HABITACIONES, rangoHabitaciones } from "@/lib/calculadora/calculo";
-import { borrarEstimacion, useEstimacion } from "@/lib/calculadora/store";
+import { RANGOS_HABITACIONES } from "@/lib/lead/rangos";
 import { USOS } from "@/lib/lead/usos";
 import { track } from "@/lib/metrics/track";
 
@@ -29,7 +28,7 @@ const ORDEN: Campo[] = ["nombre", "cargo", "hotel", "ciudad", "habitaciones", "e
 
 /**
  * Formulario de la puerta falsa. Envía a /api/lead, que valida y guarda al interesado en la base de datos (ver /panel).
- * `origen`: qué botón lo abrió (cabecera, portada, tras-demo, calculadora, piloto).
+ * `origen`: qué botón lo abrió (cabecera, portada, tras-demo, piloto o ahorro).
  */
 export function LeadForm({ origen = "piloto", onDone }: { origen?: string; onDone?: () => void }) {
   const uid = useId();
@@ -37,10 +36,6 @@ export function LeadForm({ origen = "piloto", onDone }: { origen?: string; onDon
   const [errores, setErrores] = useState<Errores>({});
   const [estado, setEstado] = useState<"idle" | "enviando" | "error" | "ok">("idle");
   const [nombreOk, setNombreOk] = useState("");
-  const estimacion = useEstimacion();
-  // Sin opción preseleccionada (no sesga los datos), salvo que venga de la calculadora.
-  const [roomsChoice, setRoomsChoice] = useState<string | null>(null);
-  const rooms = roomsChoice ?? (estimacion ? rangoHabitaciones(estimacion.entradas.habitaciones) : "");
   const shownAt = useRef(0);
   const started = useRef(false);
   const onStart = () => {
@@ -69,7 +64,6 @@ export function LeadForm({ origen = "piloto", onDone }: { origen?: string; onDon
     }
     setEstado("enviando");
     const q = new URLSearchParams(location.search);
-    const r = estimacion?.resultado;
     const payload = {
       nombre: d.get("nombre"),
       cargo: d.get("cargo"),
@@ -83,17 +77,6 @@ export function LeadForm({ origen = "piloto", onDone }: { origen?: string; onDon
       aceptaComunicaciones: d.get("aceptaComunicaciones") === "on",
       origen,
       utm: { source: q.get("utm_source") ?? "", medium: q.get("utm_medium") ?? "", campaign: q.get("utm_campaign") ?? "" },
-      calculadora:
-        estimacion && r
-          ? {
-              habitaciones: estimacion.entradas.habitaciones,
-              piezas: r.piezas,
-              ahorroAnual: r.ahorro,
-              costeActual: r.actual.total,
-              costeIntacta: r.conIntacta.total,
-              entradas: estimacion.entradas,
-            }
-          : null,
       web: d.get("web"),
       tiempo: Date.now() - shownAt.current,
     };
@@ -103,7 +86,6 @@ export function LeadForm({ origen = "piloto", onDone }: { origen?: string; onDon
       if (res.ok && data.ok) {
         setNombreOk(String(d.get("nombre")).trim().split(" ")[0]);
         setEstado("ok");
-        borrarEstimacion();
         return;
       }
       if (res.status === 422 && data.errores) {
@@ -124,7 +106,7 @@ export function LeadForm({ origen = "piloto", onDone }: { origen?: string; onDon
         <b>
           {F.gracias}, {nombreOk}.
         </b>
-        <p>{F.graciasTexto}</p>
+        <p>{origen === "ahorro" ? F.graciasAhorroTexto : F.graciasTexto}</p>
         {onDone && (
           <button type="button" className="btn btn-ghost" onClick={onDone}>
             {F.cerrar}
@@ -150,24 +132,14 @@ export function LeadForm({ origen = "piloto", onDone }: { origen?: string; onDon
 
   return (
     <form className="lead-form" noValidate onSubmit={onSubmit} onInput={onStart}>
-      {estimacion && (
-        <div className="estim full" role="status">
-          <p>
-            Tu estimación irá con la solicitud: <b>{estimacion.entradas.habitaciones} habitaciones</b>, ahorro estimado de{" "}
-            <b>{formatoEuros(estimacion.resultado.ahorro)} al año</b> con valores de ejemplo. En el piloto lo medimos de verdad.
-          </p>
-          <button type="button" className="estim-x" onClick={borrarEstimacion}>
-            No incluir
-          </button>
-        </div>
-      )}
       {field("nombre", { autoComplete: "name", required: true })}
       {field("cargo", { autoComplete: "organization-title" })}
       {field("hotel", { autoComplete: "organization", required: true })}
       {field("ciudad", { autoComplete: "address-level2", required: true })}
       <div className="field">
         <label htmlFor={id("habitaciones")}>{F.campos.habitaciones}</label>
-        <select id={id("habitaciones")} name="habitaciones" value={rooms} onChange={(e) => setRoomsChoice(e.target.value)} required {...a11y("habitaciones")}>
+        {/* sin opción preseleccionada: no sesga los datos */}
+        <select id={id("habitaciones")} name="habitaciones" defaultValue="" required {...a11y("habitaciones")}>
           <option value="" disabled>
             {F.elegirRango}
           </option>

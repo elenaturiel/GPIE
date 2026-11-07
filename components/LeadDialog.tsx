@@ -7,9 +7,10 @@ import { Rich } from "./Rich";
 import { LeadForm } from "./LeadForm";
 
 /**
- * Puerta falsa del pretotipo. Todos los botones «Solicitar piloto» abren esta ventana: el clic se
- * cuenta como interés (sin datos personales) y aquí se explica, sin rodeos, que el piloto está en
- * preparación y que quien quiera puede ser de los primeros dejando sus datos.
+ * Puertas falsas del pretotipo. Los botones «Solicitar piloto» y el de «¿Quieres calcular cuánto vas a
+ * ahorrar?» abren esta ventana: el clic se cuenta como interés (sin datos personales) y aquí se explica,
+ * sin rodeos, que el piloto (o la calculadora) está en preparación y que quien quiera puede ser de los
+ * primeros dejando sus datos. Todo llega al mismo sitio (/panel), marcado con su puerta.
  * Es un <dialog> nativo (foco atrapado, Esc para cerrar). Sin JS, los botones bajan a #piloto.
  */
 export function LeadDialog() {
@@ -35,6 +36,7 @@ export function LeadDialog() {
   }, []);
 
   const close = () => ref.current?.close();
+  const esAhorro = origen === "ahorro";
 
   return (
     <dialog
@@ -51,10 +53,10 @@ export function LeadDialog() {
         </button>
         <div className="dlg-head">
           <h2 className="display dlg-t" id="dlg-t">
-            <Rich text={F.titularModal} />
+            <Rich text={esAhorro ? F.titularAhorro : F.titularModal} />
           </h2>
           <p className="dlg-intro" id="dlg-d">
-            {F.introModal}
+            {esAhorro ? F.introAhorro : F.introModal}
           </p>
         </div>
         {origen && <LeadForm key={key} origen={origen} onDone={close} />}

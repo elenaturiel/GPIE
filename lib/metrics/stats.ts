@@ -9,13 +9,13 @@ import { kv } from "@/lib/store/kv";
  *   cta.<origen>      clic en un botón «Solicitar piloto» (la puerta falsa)
  *   empezado.<origen> empezó a rellenar los datos
  *   envio.<origen>    dejó sus datos (lo suma el servidor al guardar)
- *   calculadora       usó la calculadora
  */
 
-export const ORIGENES = ["cabecera", "portada", "tras-demo", "calculadora", "piloto"] as const;
+/** Botones de puerta falsa. «ahorro» es la de «¿Quieres calcular cuánto vas a ahorrar?»; el resto, la del piloto. */
+export const ORIGENES = ["cabecera", "portada", "tras-demo", "piloto", "ahorro"] as const;
 export type Origen = (typeof ORIGENES)[number];
 
-const EVENTOS_CLIENTE = ["visita", "cta", "empezado", "calculadora"] as const;
+const EVENTOS_CLIENTE = ["visita", "cta", "empezado"] as const;
 export type EventoCliente = (typeof EVENTOS_CLIENTE)[number];
 
 const dia = (d: Date) => d.toISOString().slice(0, 10);
@@ -26,7 +26,7 @@ const GUARDAR_DIAS = 400;
 export function campo(evento: unknown, origen?: unknown): string | null {
   const valido = typeof evento === "string" && ((EVENTOS_CLIENTE as readonly string[]).includes(evento) || evento === "envio");
   if (!valido) return null;
-  if (evento === "visita" || evento === "calculadora") return evento;
+  if (evento === "visita") return evento;
   if (typeof origen !== "string" || !(ORIGENES as readonly string[]).includes(origen)) return null;
   return `${evento}.${origen}`;
 }
@@ -57,6 +57,10 @@ export async function leerTotales(dias: number, ahora = new Date()): Promise<{ t
   });
   return { total, porDia: porDia.reverse() };
 }
+
+/** Las dos puertas falsas: qué botones pertenecen a cada una. */
+export const PUERTAS = { piloto: ["cabecera", "portada", "tras-demo", "piloto"], ahorro: ["ahorro"] } as const;
+export const puertaDe = (origen: string): keyof typeof PUERTAS => (origen === "ahorro" ? "ahorro" : "piloto");
 
 /** Suma de un tipo de evento en todos los orígenes (p. ej. todos los «cta.*»). */
 export const sumaTipo = (t: Totales, tipo: string) => Object.entries(t).reduce((a, [k, v]) => (k.startsWith(`${tipo}.`) ? a + v : a), 0);
