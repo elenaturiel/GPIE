@@ -28,7 +28,7 @@ function validar(d: FormData): Errores {
 const ORDEN: Campo[] = ["nombre", "cargo", "hotel", "ciudad", "habitaciones", "email", "telefono", "aceptaPrivacidad"];
 
 /**
- * Formulario del piloto. Envía a /api/lead (que valida y guarda en Google Sheets).
+ * Formulario de la puerta falsa. Envía a /api/lead, que valida y guarda al interesado en la base de datos (ver /panel).
  * `origen`: qué botón lo abrió (cabecera, portada, tras-demo, calculadora, piloto).
  */
 export function LeadForm({ origen = "piloto", onDone }: { origen?: string; onDone?: () => void }) {
