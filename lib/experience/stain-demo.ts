@@ -2,7 +2,7 @@ import { clamp, easeBack, easeIn, easeInOut, easeOut, lerp, rng, shade, type RGB
 import { DEMO } from "./poses";
 
 /**
- * La butaca de la demo, dibujada en un <canvas> 2D y movida por el scroll (t = 0…1).
+ * La tela de la demo, dibujada en un <canvas> 2D y movida por el scroll (t = 0…1).
  *
  *   0.08–0.38  el bote rocía la tela limpia de izquierda a derecha (la tela pasa a «tratada»)
  *   0.44–0.67  caen vino, café y zumo: cada gota choca y se queda en bolitas encima
@@ -97,7 +97,7 @@ export class StainDemo {
     return { x: r.left + this.s.sx + q.fx * this.s.sw, y: r.top + this.s.sy + q.fy * this.s.sh };
   }
 
-  /** Tejido de la butaca: trama, ruido y viñeteado, pintado una vez. */
+  /** Tejido de la tapicería: trama, ruido y viñeteado, pintado una vez. */
   private buildFabric() {
     const { sw, sh } = this.s;
     const c = document.createElement("canvas");

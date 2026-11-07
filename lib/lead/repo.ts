@@ -18,6 +18,11 @@ export type Interesado = Lead & {
   consentimiento: { fecha: string; version: string; texto: string };
 };
 
+/** Registros guardados con el formulario antiguo (solo hoteles) pueden traer estos campos. */
+type Antiguo = { hotel?: string; tipo?: string; empresa?: string };
+export const empresaDe = (i: Interesado) => i.empresa || (i as Antiguo).hotel || "";
+export const tipoDe = (i: Interesado) => i.tipo || ((i as Antiguo).hotel ? "Hoteles y hostales" : "");
+
 /** Prueba del consentimiento: el texto exacto que se aceptó. */
 export const TEXTO_CONSENTIMIENTO = [casillas.privacidad, ...Object.values(primeraCapa).slice(0, 5)].join(" ");
 

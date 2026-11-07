@@ -838,7 +838,8 @@ a {
 }
 .nums {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  max-width: 560px;
   gap: clamp(14px, 2.5vw, 32px);
   margin-top: 48px;
   padding: 0;

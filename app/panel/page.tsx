@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { OBJETIVO_CONVERSION } from "@/config/pretotipo";
-import { listarInteresados, type Interesado } from "@/lib/lead/repo";
+import { empresaDe, listarInteresados, tipoDe, type Interesado } from "@/lib/lead/repo";
 import { leerTotales, ORIGENES, PUERTAS, puertaDe, sumaTipo, TOPE_ESCRITURAS_MES, type Totales } from "@/lib/metrics/stats";
 import { panelConfigurado, sesionValida } from "@/lib/panel/auth";
 import { AlmacenNoConfigurado } from "@/lib/store/docs";
@@ -104,7 +104,7 @@ function Tabla({ lista }: { lista: Interesado[] }) {
       <table className="pnl-table">
         <thead>
           <tr>
-            {["Fecha", "Puerta falsa", "Nombre", "Cargo", "Hotel", "Ciudad", "Habitaciones", "Email", "Teléfono", "Dónde lo usaría", "Novedades", "Botón", "Origen (UTM)", ""].map((h, i) => (
+            {["Fecha", "Puerta falsa", "Nombre", "Dónde lo usaría", "Empresa", "Ciudad", "Email", "Teléfono", "Novedades", "Botón", "Origen (UTM)", ""].map((h, i) => (
               <th key={i} scope="col">
                 {h}
               </th>
@@ -121,20 +121,18 @@ function Tabla({ lista }: { lista: Interesado[] }) {
                   <span className={`pnl-tag pnl-tag-${puerta}`}>{PUERTA[puerta]}</span>
                 </td>
                 <td>{i.nombre}</td>
-                <td>{i.cargo || "—"}</td>
-                <td>{i.hotel}</td>
+                <td>{tipoDe(i) || "—"}</td>
+                <td>{empresaDe(i) || "—"}</td>
                 <td>{i.ciudad}</td>
-                <td>{i.habitaciones}</td>
                 <td>
                   <a href={`mailto:${i.email}`}>{i.email}</a>
                 </td>
                 <td>{i.telefono || "—"}</td>
-                <td>{i.usos?.length ? i.usos.join(", ") : "—"}</td>
                 <td>{i.aceptaComunicaciones ? "Sí" : "No"}</td>
                 <td>{BOTONES[i.origen] ?? i.origen}</td>
                 <td>{[i.utm?.source, i.utm?.medium, i.utm?.campaign].filter(Boolean).join(" / ") || "—"}</td>
                 <td>
-                  <Borrar id={i.id} hotel={i.hotel} />
+                  <Borrar id={i.id} nombre={empresaDe(i) || i.nombre} />
                 </td>
               </tr>
             );

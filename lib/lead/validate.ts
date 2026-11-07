@@ -1,6 +1,5 @@
-import { RANGOS_HABITACIONES } from "./rangos";
+import { TIPOS } from "./tipos";
 import { ORIGENES } from "@/lib/metrics/stats";
-import { USOS } from "./usos";
 
 /**
  * Validación de la solicitud de piloto en el servidor (no se fía de lo que valide el navegador).
@@ -10,13 +9,11 @@ import { USOS } from "./usos";
 /** Lo que llega del navegador. */
 export type LeadInput = {
   nombre?: unknown;
-  cargo?: unknown;
-  hotel?: unknown;
+  tipo?: unknown;
+  empresa?: unknown;
   ciudad?: unknown;
-  habitaciones?: unknown;
   email?: unknown;
   telefono?: unknown;
-  usos?: unknown;
   aceptaPrivacidad?: unknown;
   aceptaComunicaciones?: unknown;
   origen?: unknown;
@@ -29,13 +26,11 @@ export type LeadInput = {
 
 export type Lead = {
   nombre: string;
-  cargo: string;
-  hotel: string;
+  tipo: string;
+  empresa: string;
   ciudad: string;
-  habitaciones: string;
   email: string;
   telefono: string;
-  usos: string[];
   aceptaComunicaciones: boolean;
   origen: string;
   utm: { source: string; medium: string; campaign: string };
@@ -70,13 +65,11 @@ export function validarLead(body: LeadInput): Resultado {
 
   const lead: Lead = {
     nombre: texto(body.nombre, 80),
-    cargo: texto(body.cargo, 80),
-    hotel: texto(body.hotel, 120),
+    tipo: texto(body.tipo, 60),
+    empresa: texto(body.empresa, 120),
     ciudad: texto(body.ciudad, 80),
-    habitaciones: texto(body.habitaciones, 20),
     email: texto(body.email, 254).toLowerCase(),
     telefono: texto(body.telefono, 20),
-    usos: Array.isArray(body.usos) ? USOS.filter((u) => (body.usos as unknown[]).includes(u)) : [],
     aceptaComunicaciones: body.aceptaComunicaciones === true,
     origen: (ORIGENES as readonly string[]).includes(texto(body.origen, 20)) ? texto(body.origen, 20) : "desconocido",
     utm: { source: "", medium: "", campaign: "" },
@@ -88,9 +81,8 @@ export function validarLead(body: LeadInput): Resultado {
 
   const errores: Partial<Record<keyof LeadInput, string>> = {};
   if (lead.nombre.length < 2) errores.nombre = "Escribe tu nombre.";
-  if (lead.hotel.length < 2) errores.hotel = "Escribe el nombre del hotel.";
   if (lead.ciudad.length < 2) errores.ciudad = "Escribe la ciudad.";
-  if (!(RANGOS_HABITACIONES as readonly string[]).includes(lead.habitaciones)) errores.habitaciones = "Elige un rango de habitaciones.";
+  if (!TIPOS.includes(lead.tipo)) errores.tipo = "Elige dónde lo usarías.";
   if (!EMAIL.test(lead.email)) errores.email = "Escribe un email válido.";
   if (lead.telefono && !TELEFONO.test(lead.telefono)) errores.telefono = "El teléfono no parece válido.";
   if (body.aceptaPrivacidad !== true) errores.aceptaPrivacidad = "Tienes que aceptar la política de privacidad.";

@@ -1,6 +1,7 @@
 # INTACTA · web del pretotipo
 
-Landing para medir el interés de hoteles en un piloto de INTACTA (antimanchas textil para hoteles).
+Landing para medir el interés en un piloto de INTACTA, antimanchas textil para cualquier tapicería: hoteles, alojamientos
+turísticos, VTC y taxis, hostelería, comercios, oficinas y casas.
 Proyecto GPIE · Universidad de Navarra.
 
 > README provisional (fases 0–1). La versión completa —contactos, métricas, cookies, calculadora— llega en la fase 7.

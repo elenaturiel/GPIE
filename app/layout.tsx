@@ -4,9 +4,9 @@ import { archivo, instrument, plexMono } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "INTACTA · Antimanchas para tapicería de hotel",
+  title: "INTACTA · Antimanchas para tapicería",
   description:
-    "INTACTA protege butacas, sofás y cabeceros de hotel con nanotecnología. Solicita un piloto gratuito en tu hotel.",
+    "INTACTA protege sofás, sillas y asientos de tela con nanotecnología: lo que se derrama se queda en gotas. Para hoteles, alojamientos turísticos, VTC, hostelería, comercios y casas.",
 };
 
 export const viewport: Viewport = {

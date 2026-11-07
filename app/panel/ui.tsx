@@ -22,9 +22,9 @@ export function Login() {
 }
 
 /** Botón de borrar con confirmación (derecho de supresión). */
-export function Borrar({ id, hotel }: { id: string; hotel: string }) {
+export function Borrar({ id, nombre }: { id: string; nombre: string }) {
   return (
-    <form action={borrar} onSubmit={(e) => !confirm(`¿Borrar definitivamente a ${hotel}?`) && e.preventDefault()}>
+    <form action={borrar} onSubmit={(e) => !confirm(`¿Borrar definitivamente a ${nombre}?`) && e.preventDefault()}>
       <input type="hidden" name="id" value={id} />
       <button type="submit" className="pnl-del">
         Borrar

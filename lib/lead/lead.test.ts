@@ -4,11 +4,10 @@ import { seguroParaHoja, TIEMPO_MINIMO_MS, validarLead, type LeadInput } from ".
 
 const valido: LeadInput = {
   nombre: "  Ana   García ",
-  cargo: "Gobernanta",
-  hotel: "Hotel Ejemplo",
+  tipo: "VTC y taxis",
+  empresa: "Ana VTC",
   ciudad: "Pamplona",
-  habitaciones: "50–149",
-  email: "Ana@Hotel.com",
+  email: "Ana@Ejemplo.com",
   telefono: "",
   aceptaPrivacidad: true,
   aceptaComunicaciones: false,
@@ -23,7 +22,7 @@ describe("validarLead", () => {
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     expect(r.lead.nombre).toBe("Ana García");
-    expect(r.lead.email).toBe("ana@hotel.com");
+    expect(r.lead.email).toBe("ana@ejemplo.com");
     expect(r.lead.aceptaComunicaciones).toBe(false);
   });
 
@@ -41,10 +40,15 @@ describe("validarLead", () => {
   });
 
   it("da un error por cada campo obligatorio vacío o mal", () => {
-    const r = validarLead({ aceptaPrivacidad: false, email: "no-es-email", habitaciones: "mil", telefono: "abc" });
+    const r = validarLead({ aceptaPrivacidad: false, email: "no-es-email", tipo: "Nave espacial", telefono: "abc" });
     expect(r.ok).toBe(false);
     if (r.ok || r.bot) return;
-    expect(Object.keys(r.errores).sort()).toEqual(["aceptaPrivacidad", "ciudad", "email", "habitaciones", "hotel", "nombre", "telefono"].sort());
+    expect(Object.keys(r.errores).sort()).toEqual(["aceptaPrivacidad", "ciudad", "email", "nombre", "telefono", "tipo"].sort());
+  });
+
+  it("la empresa es opcional (también para particulares)", () => {
+    const r = validarLead({ ...valido, tipo: "En casa", empresa: "" });
+    expect(r.ok && r.lead.empresa).toBe("");
   });
 
   it("detecta bots: campo trampa relleno o envío demasiado rápido", () => {
@@ -53,16 +57,14 @@ describe("validarLead", () => {
   });
 
   it("recorta textos largos y quita caracteres de control", () => {
-    const r = validarLead({ ...valido, hotel: "H\u0000otel " + "x".repeat(500) });
-    expect(r.ok && r.lead.hotel.length).toBe(120);
-    expect(r.ok && r.lead.hotel.startsWith("H otel")).toBe(true);
+    const r = validarLead({ ...valido, empresa: "E\u0000mpresa " + "x".repeat(500) });
+    expect(r.ok && r.lead.empresa.length).toBe(120);
+    expect(r.ok && r.lead.empresa.startsWith("E mpresa")).toBe(true);
   });
 
-  it("guarda solo los usos de la lista", () => {
-    const r = validarLead({ ...valido, usos: ["Butacas y sillones", "<b>otro</b>", 3] });
-    expect(r.ok && r.lead.usos).toEqual(["Butacas y sillones"]);
-    const r2 = validarLead({ ...valido, usos: "Butacas y sillones" });
-    expect(r2.ok && r2.lead.usos).toEqual([]);
+  it("acepta todos los usos de la lista, incluido «Otro»", () => {
+    for (const tipo of ["Hoteles y hostales", "Airbnb y pisos turísticos", "VTC y taxis", "Restaurantes y cafeterías", "Tiendas y oficinas", "En casa", "Otro"])
+      expect(validarLead({ ...valido, tipo }).ok).toBe(true);
   });
 
   it("solo admite orígenes conocidos", () => {
@@ -108,11 +110,11 @@ describe("interesados en el almacén", () => {
 
   it("guarda, lista (más reciente primero) y borra", async () => {
     const a = nuevoInteresado(r.lead, new Date("2026-11-01T10:00:00Z"));
-    const b = nuevoInteresado({ ...r.lead, hotel: "Otro" }, new Date("2026-11-02T10:00:00Z"));
+    const b = nuevoInteresado({ ...r.lead, empresa: "Otro" }, new Date("2026-11-02T10:00:00Z"));
     await guardarInteresado(a);
     await guardarInteresado(b);
     const lista = await listarInteresados(new Date("2026-11-03T00:00:00Z"));
-    expect(lista.map((i) => i.hotel)).toEqual(["Otro", "Hotel Ejemplo"]);
+    expect(lista.map((i) => i.empresa)).toEqual(["Otro", "Ana VTC"]);
     expect(lista[1].consentimiento.texto).toContain("He leído y acepto la política de privacidad");
     expect(await borrarInteresado(a.id)).toBe(true);
     expect(await borrarInteresado(a.id)).toBe(false);
@@ -131,10 +133,10 @@ describe("interesados en el almacén", () => {
   });
 
   it("dos solicitudes a la vez no se pisan", async () => {
-    const xs = Array.from({ length: 6 }, (_, k) => nuevoInteresado({ ...r.lead, hotel: `H${k}` }, new Date()));
+    const xs = Array.from({ length: 6 }, (_, k) => nuevoInteresado({ ...r.lead, empresa: `H${k}` }, new Date()));
     await Promise.all(xs.map(guardarInteresado));
     const lista = await listarInteresados();
-    expect(lista.map((i) => i.hotel).sort()).toEqual(["H0", "H1", "H2", "H3", "H4", "H5"]);
+    expect(lista.map((i) => i.empresa).sort()).toEqual(["H0", "H1", "H2", "H3", "H4", "H5"]);
     for (const x of xs) await borrarInteresado(x.id);
   });
 });

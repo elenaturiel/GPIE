@@ -21,7 +21,7 @@ export const marca = {
   nombre: "INTACTA",
   // La web no menciona al fabricante (decisión del equipo): ni en la cabecera, ni en el pie, ni en el bote.
   apellido: "",
-  pie: ["INTACTA · Antimanchas textil para hoteles"],
+  pie: ["INTACTA · Antimanchas textil"],
 };
 
 export const cta = {
@@ -32,8 +32,8 @@ export const cta = {
 
 export const portada = {
   titular: ["La mancha", "no entra."], // TECNAN
-  antetitulo: "Antimanchas para tapicería de hotel",
-  texto: "INTACTA protege butacas, sofás y cabeceros con nanotecnología.", // TECNAN
+  antetitulo: "Antimanchas para cualquier tapicería",
+  texto: "INTACTA protege sofás, sillas, asientos y cualquier tapicería de tela con nanotecnología.", // TECNAN
   textoSuave: "Lo que se derrama se queda en gotas: un paño y listo.", // TECNAN
   desliza: "Desliza",
 };
@@ -44,7 +44,7 @@ export const especificaciones = {
   puntos: [
     { etiqueta: "Gatillo", titulo: "Niebla fina", texto: "Cubre el tejido de forma uniforme sin empaparlo." }, // TECNAN
     { etiqueta: "Fórmula", titulo: "Nanotecnología", texto: "Una capa invisible que recubre cada fibra." }, // TECNAN
-    { etiqueta: "Formato", titulo: "750 ml profesional", texto: "Cabe en el carro de la camarera de pisos." }, // TECNAN (formato sin decidir)
+    { etiqueta: "Formato", titulo: "750 ml profesional", texto: "Cabe en un carro de limpieza, un armario o la guantera." }, // TECNAN (formato sin decidir)
     { etiqueta: "Resultado", titulo: "Tejido intacto", texto: "El líquido se queda en gotas y se retira con un paño." }, // TECNAN
   ],
 };
@@ -52,8 +52,8 @@ export const especificaciones = {
 /** La demo: el producto PROTEGE (no quita manchas ya hechas). */
 export const demo = {
   etiquetaAria:
-    "Una butaca limpia. El pulverizador la rocía con INTACTA; después caen vino, café y zumo, que se quedan en gotas sobre la tela, y un paño las retira de una pasada.",
-  telaEtiqueta: "BUTACA · HABITACIÓN 214",
+    "Una tapicería limpia. El pulverizador la rocía con INTACTA; después caen vino, café y zumo, que se quedan en gotas sobre la tela, y un paño las retira de una pasada.",
+  telaEtiqueta: "TAPICERÍA DE TELA",
   telaSinTratar: "SIN TRATAR",
   telaTratada: "TRATADA CON INTACTA",
   fases: [
@@ -65,12 +65,12 @@ export const demo = {
     {
       paso: "Después · Vino, café y zumo",
       titular: ["La mancha ", { g: "no entra." }] as Rich,
-      pie: ["Lo que cae sobre la butaca ", { b: "se queda en gotas, encima de la tela." }] as Rich, // TECNAN
+      pie: ["Lo que cae ", { b: "se queda en gotas, encima de la tela." }] as Rich, // TECNAN
     },
     {
       paso: "Paso 2 · Sin frotar",
       titular: ["Pasa un ", { g: "paño." }] as Rich,
-      pie: ["Una sola pasada ", { g: "y la butaca queda lista." }] as Rich, // TECNAN
+      pie: ["Una sola pasada ", { g: "y la tela queda lista." }] as Rich, // TECNAN
     },
   ],
 };
@@ -79,23 +79,23 @@ export const problema = {
   antetitulo: "El problema",
   titular: ["Hoy una mancha es un ", { g: "proceso." }] as Rich,
   intro:
-    "Cada mancha en una pieza tapizada moviliza a varias personas y deja la habitación incompleta mientras la pieza está fuera.",
+    "Una mancha en un sofá, un asiento o una silla tapizada cuesta tiempo y dinero, y mientras tanto la pieza no se puede usar.",
   sin: {
     titulo: "Sin tratar",
     resumen: "5 pasos",
     pasos: [
-      "La camarera de pisos encuentra la mancha.",
-      "Aviso a gobernanta y mantenimiento.",
-      "Desmontar la funda o retirar la pieza.",
-      "Tintorería o tapicero externo.",
-      "La habitación espera a que vuelva.",
+      "Cae café, vino o lo que sea.",
+      "Se frota y la mancha se extiende.",
+      "Productos especiales o limpieza profesional.",
+      "Tintorería o tapicero si no sale.",
+      "La pieza fuera de uso mientras tanto.",
     ],
   },
   con: {
     titulo: "Con INTACTA",
     resumen: "2 pasos",
     pasos: ["Tapicería tratada de antemano.", "Si cae algo, paño húmedo y una pasada."], // TECNAN
-    final: "Habitación lista.",
+    final: "Lista para usar.",
   },
 };
 
@@ -123,27 +123,27 @@ export const dondeSeUsa = {
   antetitulo: "Dónde se usa",
   titular: ["Todo lo que tiene ", { g: "tela." }] as Rich,
   lugares: [
-    { zona: "Habitación", titulo: "Butacas y sillones", texto: "La pieza que más vino y café recibe." },
-    { zona: "Habitación", titulo: "Cabeceros tapizados", texto: "Maquillaje, cremas y manos." }, // TECNAN (¿repele grasa?)
-    { zona: "Lobby", titulo: "Sofás de zonas comunes", texto: "Uso intensivo, a la vista de todos." },
-    { zona: "Restaurante", titulo: "Sillas y bancadas", texto: "Desayunos, salsas y zumos cada día." }, // TECNAN (¿repele grasa?)
-    { zona: "Habitación", titulo: "Cojines y plaids", texto: "Piezas sueltas que se manchan y se pierden en lavandería." }, // TECNAN (¿aguanta lavados?)
-    { zona: "Terraza", titulo: "Cojines de exterior", texto: "Bebidas y cremas solares." }, // TECNAN (¿exterior y grasa?)
+    { zona: "Hoteles", titulo: "Hoteles y hostales", texto: "Butacas, sofás y cabeceros en habitaciones y zonas comunes." },
+    { zona: "Alojamiento turístico", titulo: "Airbnb y pisos turísticos", texto: "Sofás y sillas que pasan por muchas manos cada mes." },
+    { zona: "Transporte", titulo: "VTC y taxis", texto: "Asientos de tela entre un viaje y el siguiente." }, // TECNAN (¿apto para tapicería de coche?)
+    { zona: "Hostelería", titulo: "Restaurantes y cafeterías", texto: "Sillas, bancadas y cojines con salsas, café y zumos." }, // TECNAN (¿repele grasa?)
+    { zona: "Comercio", titulo: "Tiendas y oficinas", texto: "Probadores, salas de espera y sillas de trabajo." },
+    { zona: "Casa", titulo: "En casa", texto: "El sofá, las sillas del comedor y el coche familiar." }, // TECNAN (¿apto para tapicería de coche?)
   ],
+
 };
 
 export const piloto = {
-  antetitulo: "Piloto para hoteles",
+  antetitulo: "Piloto gratuito",
   titular: ["Pruébalo antes de ", { g: "decidir." }] as Rich,
   cifras: [
-    { valor: 3, sufijo: "", texto: "habitaciones tratadas por nuestro equipo." }, // PILOTO
-    { valor: 30, sufijo: "", texto: "días de uso normal con huéspedes reales." }, // PILOTO
-    { valor: 0, sufijo: "€", texto: "de coste para el hotel durante el piloto." }, // PILOTO
+    { valor: 30, sufijo: "", texto: "días de uso normal, en tu negocio o en tu casa." }, // PILOTO
+    { valor: 0, sufijo: "€", texto: "de coste durante el piloto." }, // PILOTO
   ],
   informe:
-    "Al terminar te entregamos un informe con las manchas registradas, el tiempo de limpieza y las piezas que no tuvieron que salir a tintorería, comparado con habitaciones sin tratar.", // PILOTO
+    "Al terminar te entregamos un informe con las manchas registradas, el tiempo de limpieza y las piezas que no tuvieron que salir a tintorería, comparado con piezas sin tratar.", // PILOTO
   formTitular: ["Reserva una de las ", { g: "plazas." }] as Rich, // PILOTO (¿cuántas plazas hay?)
-  formTexto: "Estamos eligiendo los primeros hoteles. Cuéntanos quién eres y te escribimos.",
+  formTexto: "Estamos eligiendo a los primeros participantes. Cuéntanos quién eres y te escribimos.",
 };
 
 /** Textos de la etiqueta del bote 3D (también son afirmaciones de producto). */
@@ -151,7 +151,7 @@ export const etiquetaBote = {
   arriba: "ANTIMANCHAS TEXTIL · USO PROFESIONAL", // TECNAN
   nombre: "INTACTA",
   lema: "PROTECCIÓN INVISIBLE PARA TAPICERÍA", // TECNAN
-  usos: "Butacas · Sofás · Cabeceros · Cojines",
+  usos: "Sofás · Sillas · Asientos · Cojines",
   tecnologia: "", // vacío: no se pinta (la web no menciona al fabricante)
   formato: "750 ml", // TECNAN (formato sin decidir)
   origen: "Navarra",
@@ -162,30 +162,30 @@ export const cinta = ["Vino", "Café", "Zumo", "Maquillaje", "Cremas", "Salsas"]
 
 /** Banda que se abre a pantalla completa después de la demo. */
 export const banda = {
-  antetitulo: "Piloto gratuito para hoteles",
-  titular: ["¿Lo probamos en ", { g: "tu hotel?" }] as Rich,
-  texto: "Tratamos tres habitaciones y medimos durante 30 días cuántas manchas se quedan en gotas.", // PILOTO
+  antetitulo: "Piloto gratuito",
+  titular: ["¿Lo probamos ", { g: "contigo?" }] as Rich,
+  texto: "Tratamos tus piezas y medimos durante 30 días cuántas manchas se quedan en gotas.", // PILOTO
 };
 
 /** Pasos del piloto (lista grande fija con scroll). */
 export const pasosPiloto = {
   antetitulo: "Cómo funciona el piloto",
   pasos: [
-    { titulo: "Visitamos el hotel", texto: "Elegimos contigo tres habitaciones y las piezas que se van a tratar." }, // PILOTO
-    { titulo: "Tratamos las piezas", texto: "Nuestro equipo aplica INTACTA. Vuestra rutina de limpieza no cambia." }, // PILOTO
-    { titulo: "30 días de uso", texto: "Huéspedes reales. Se apunta cada mancha y el tiempo que lleva quitarla." }, // PILOTO
-    { titulo: "Te damos los datos", texto: "Un informe que compara las habitaciones tratadas con las que no." }, // PILOTO
+    { titulo: "Hablamos contigo", texto: "Vemos qué piezas tratar: sofás, sillas, asientos, cojines…" }, // PILOTO
+    { titulo: "Tratamos las piezas", texto: "Nuestro equipo aplica INTACTA. Tú sigues como siempre." }, // PILOTO
+    { titulo: "30 días de uso", texto: "Uso real. Se apunta cada mancha y lo que cuesta quitarla." }, // PILOTO
+    { titulo: "Te damos los datos", texto: "Un informe que compara lo tratado con lo que no." }, // PILOTO
   ],
 };
 
 /** Sello giratorio junto a la portada. */
-export const sello = "Piloto gratuito · Para hoteles · ";
+export const sello = "Piloto gratuito · Sé de los primeros · ";
 
 /** Segunda puerta falsa: «¿Quieres calcular cuánto vas a ahorrar?» (sin cifras inventadas). */
 export const ahorro = {
   antetitulo: "Calcula tu ahorro",
   titular: ["¿Cuánto ", { g: "ahorrarías?" }] as Rich,
-  texto: "Butacas a la tintorería, piezas que se retapizan, horas de personal y habitaciones a medias. Descubre lo que te cuestan hoy las manchas y lo que podrías ahorrar con INTACTA.",
+  texto: "Tintorería, retapizados, horas de limpieza y piezas fuera de uso. Descubre lo que te cuestan hoy las manchas y lo que podrías ahorrar con INTACTA.",
   boton: "¿Quieres calcular cuánto vas a ahorrar?",
 };
 
@@ -194,37 +194,34 @@ export const formulario = {
   // Puerta falsa: el botón dice «Solicitar piloto»; al pulsarlo, contamos el interés y lo decimos claro.
   titularModal: ["¿Te ", { g: "interesa?" }] as Rich,
   introModal:
-    "Estamos preparando un piloto gratuito con los primeros hoteles. Si te interesa, puedes ser de los primeros en probar INTACTA: déjanos tus datos y te escribimos.",
+    "Estamos preparando un piloto gratuito con los primeros negocios y hogares. Si te interesa, puedes ser de los primeros en probar INTACTA: déjanos tus datos y te escribimos.",
   // Ventana de la segunda puerta falsa (botón «¿Quieres calcular cuánto vas a ahorrar?»).
   titularAhorro: ["¿Cuánto vas a ", { g: "ahorrar?" }] as Rich,
   introAhorro:
-    "Estamos preparando la calculadora con los datos reales de los primeros hoteles del piloto. Sé de los primeros en usarla y en probar INTACTA: déjanos tus datos y te escribimos en cuanto esté lista.",
+    "Estamos preparando la calculadora con los datos reales de los primeros participantes del piloto. Sé de los primeros en usarla y en probar INTACTA: déjanos tus datos y te escribimos en cuanto esté lista.",
   graciasAhorroTexto: "Estamos preparando la calculadora con los datos del piloto. Te escribimos en cuanto esté lista.",
-  usosPregunta: "¿Dónde lo usarías? (opcional)",
   campos: {
     nombre: "Nombre",
-    cargo: "Cargo",
-    hotel: "Hotel",
+    tipo: "¿Dónde lo usarías?",
+    empresa: "Empresa o negocio (opcional)",
     ciudad: "Ciudad",
-    habitaciones: "Habitaciones",
     email: "Email",
     telefono: "Teléfono (opcional)",
   },
   ejemplos: {
     nombre: "Ana García",
-    cargo: "Gobernanta, director/a…",
-    hotel: "Nombre del hotel",
+    empresa: "Si tienes un negocio",
     ciudad: "Pamplona",
-    email: "ana@hotel.com",
+    email: "ana@ejemplo.com",
     telefono: "600 000 000",
   },
-  elegirRango: "Elige un rango",
+  elegirTipo: "Elige una opción",
   enviar: "Solicitar piloto gratuito",
   enviando: "Enviando…",
   graciasAntetitulo: "Solicitud recibida",
   gracias: "Gracias",
   // Mensaje honesto: es un piloto en selección, no un producto a la venta.
-  graciasTexto: "Estamos seleccionando los primeros hoteles para el piloto. Te escribimos en 48 horas.",
+  graciasTexto: "Estamos seleccionando a los primeros participantes del piloto. Te escribimos en 48 horas.",
   errorEnvio: "No hemos podido enviar tu solicitud. Inténtalo de nuevo en unos minutos.",
   cerrar: "Cerrar",
 };
@@ -234,7 +231,7 @@ export const video = {
   id: "T2c1X1Gsi34",
   titulo: "INTACTA - la mancha se va, tu mueble se queda",
   antetitulo: "En vídeo",
-  titular: ["Así se ve en ", { g: "un hotel." }] as Rich,
+  titular: ["Míralo en ", { g: "acción." }] as Rich,
   reproducir: "Reproducir el vídeo",
   aviso: "Al reproducirlo se conecta con YouTube (Google), que recibe tu IP. Usamos su versión sin cookies de seguimiento.",
 };

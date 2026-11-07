@@ -4,7 +4,7 @@ import { crearLimitador } from "@/lib/lead/rate-limit";
 import { guardarInteresado, nuevoInteresado } from "@/lib/lead/repo";
 import { validarLead, type LeadInput } from "@/lib/lead/validate";
 
-// POST /api/lead → valida los datos de un hotel interesado y los guarda en el almacén de la web (ver /panel).
+// POST /api/lead → valida los datos de un interesado y los guarda en el almacén de la web (ver /panel).
 
 const permitido = crearLimitador(5, 10 * 60 * 1000);
 const MAX_BYTES = 16 * 1024;

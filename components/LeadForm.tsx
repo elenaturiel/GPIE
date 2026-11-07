@@ -3,11 +3,10 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { casillas, primeraCapa } from "@/content/legal";
 import { formulario as F } from "@/content/textos";
-import { RANGOS_HABITACIONES } from "@/lib/lead/rangos";
-import { USOS } from "@/lib/lead/usos";
+import { TIPOS } from "@/lib/lead/tipos";
 import { track } from "@/lib/metrics/track";
 
-type Campo = "nombre" | "cargo" | "hotel" | "ciudad" | "habitaciones" | "email" | "telefono" | "aceptaPrivacidad";
+type Campo = "nombre" | "tipo" | "empresa" | "ciudad" | "email" | "telefono" | "aceptaPrivacidad";
 type Errores = Partial<Record<Campo, string>>;
 
 /** Validación en el navegador, para avisar antes de enviar (el servidor vuelve a validar todo). */
@@ -15,16 +14,15 @@ function validar(d: FormData): Errores {
   const e: Errores = {};
   const v = (k: string) => String(d.get(k) ?? "").trim();
   if (v("nombre").length < 2) e.nombre = "Escribe tu nombre.";
-  if (v("hotel").length < 2) e.hotel = "Escribe el nombre del hotel.";
+  if (!v("tipo")) e.tipo = "Elige dónde lo usarías.";
   if (v("ciudad").length < 2) e.ciudad = "Escribe la ciudad.";
-  if (!v("habitaciones")) e.habitaciones = "Elige un rango de habitaciones.";
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v("email"))) e.email = "Escribe un email válido.";
   if (v("telefono") && !/^\+?[0-9 ()-]{6,20}$/.test(v("telefono"))) e.telefono = "El teléfono no parece válido.";
   if (d.get("aceptaPrivacidad") !== "on") e.aceptaPrivacidad = "Tienes que aceptar la política de privacidad.";
   return e;
 }
 
-const ORDEN: Campo[] = ["nombre", "cargo", "hotel", "ciudad", "habitaciones", "email", "telefono", "aceptaPrivacidad"];
+const ORDEN: Campo[] = ["nombre", "tipo", "empresa", "ciudad", "email", "telefono", "aceptaPrivacidad"];
 
 /**
  * Formulario de la puerta falsa. Envía a /api/lead, que valida y guarda al interesado en la base de datos (ver /panel).
@@ -66,13 +64,11 @@ export function LeadForm({ origen = "piloto", onDone }: { origen?: string; onDon
     const q = new URLSearchParams(location.search);
     const payload = {
       nombre: d.get("nombre"),
-      cargo: d.get("cargo"),
-      hotel: d.get("hotel"),
+      tipo: d.get("tipo"),
+      empresa: d.get("empresa"),
       ciudad: d.get("ciudad"),
-      habitaciones: d.get("habitaciones"),
       email: d.get("email"),
       telefono: d.get("telefono"),
-      usos: d.getAll("usos"),
       aceptaPrivacidad: d.get("aceptaPrivacidad") === "on",
       aceptaComunicaciones: d.get("aceptaComunicaciones") === "on",
       origen,
@@ -122,7 +118,7 @@ export function LeadForm({ origen = "piloto", onDone }: { origen?: string; onDon
       </span>
     ) : null;
   const a11y = (k: Campo) => ({ "aria-invalid": errores[k] ? true : undefined, "aria-describedby": errores[k] ? id(`${k}-e`) : undefined });
-  const field = (k: "nombre" | "cargo" | "hotel" | "ciudad" | "email" | "telefono", extra: React.InputHTMLAttributes<HTMLInputElement>, full = false) => (
+  const field = (k: "nombre" | "empresa" | "ciudad" | "email" | "telefono", extra: React.InputHTMLAttributes<HTMLInputElement>, full = false) => (
     <div className={`field${full ? " full" : ""}`}>
       <label htmlFor={id(k)}>{F.campos[k]}</label>
       <input id={id(k)} name={k} placeholder={F.ejemplos[k]} {...a11y(k as Campo)} {...extra} />
@@ -133,34 +129,23 @@ export function LeadForm({ origen = "piloto", onDone }: { origen?: string; onDon
   return (
     <form className="lead-form" noValidate onSubmit={onSubmit} onInput={onStart}>
       {field("nombre", { autoComplete: "name", required: true })}
-      {field("cargo", { autoComplete: "organization-title" })}
-      {field("hotel", { autoComplete: "organization", required: true })}
-      {field("ciudad", { autoComplete: "address-level2", required: true })}
       <div className="field">
-        <label htmlFor={id("habitaciones")}>{F.campos.habitaciones}</label>
+        <label htmlFor={id("tipo")}>{F.campos.tipo}</label>
         {/* sin opción preseleccionada: no sesga los datos */}
-        <select id={id("habitaciones")} name="habitaciones" defaultValue="" required {...a11y("habitaciones")}>
+        <select id={id("tipo")} name="tipo" defaultValue="" required {...a11y("tipo")}>
           <option value="" disabled>
-            {F.elegirRango}
+            {F.elegirTipo}
           </option>
-          {RANGOS_HABITACIONES.map((r) => (
-            <option key={r}>{r}</option>
+          {TIPOS.map((t) => (
+            <option key={t}>{t}</option>
           ))}
         </select>
-        {err("habitaciones")}
+        {err("tipo")}
       </div>
+      {field("empresa", { autoComplete: "organization" })}
+      {field("ciudad", { autoComplete: "address-level2", required: true })}
       {field("email", { type: "email", autoComplete: "email", required: true })}
-      {field("telefono", { type: "tel", autoComplete: "tel", inputMode: "tel" }, true)}
-
-      <fieldset className="usos full">
-        <legend>{F.usosPregunta}</legend>
-        {USOS.map((u) => (
-          <label key={u} className="chip">
-            <input type="checkbox" name="usos" value={u} />
-            <span>{u}</span>
-          </label>
-        ))}
-      </fieldset>
+      {field("telefono", { type: "tel", autoComplete: "tel", inputMode: "tel" })}
 
       {/* Trampa para bots: invisible para personas y lectores de pantalla. */}
       <div className="hp" aria-hidden="true">

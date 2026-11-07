@@ -13,7 +13,7 @@ export function Marquee() {
     </ul>
   );
   return (
-    <section className="mq" aria-label="Manchas habituales en tapicería de hotel">
+    <section className="mq" aria-label="Manchas habituales en tapicería">
       <div className="mq-track">
         {row(false)}
         {row(true)}
