@@ -175,6 +175,7 @@ describe("contadores del embudo", () => {
     expect(campo("borrar-todo", "portada")).toBeNull();
     expect(campo("cta", "ahorro")).toBe("cta.ahorro");
     expect(campo("calculadora")).toBeNull(); // ya no existe
+    expect(campo("video")).toBe("video");
   });
 
   it("agrupa los eventos y los guarda juntos como mucho cada 30 minutos", async () => {

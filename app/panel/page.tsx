@@ -50,7 +50,7 @@ function Embudo({ t, titulo }: { t: Totales; titulo: string }) {
       </div>
       <p className="pnl-note">
           Objetivo de la hipótesis: {OBJETIVO_CONVERSION === null ? "pendiente (config/pretotipo.ts)" : `${OBJETIVO_CONVERSION} % de las visitas`}. Las cifras
-        de visitas y clics son aproximadas: se guardan agrupadas para no gastar el almacenamiento gratuito.
+        de visitas y clics son aproximadas: se guardan agrupadas para no gastar el almacenamiento gratuito. Vídeo reproducido {t.video ?? 0} veces.
       </p>
       <table className="pnl-mini">
         <thead>

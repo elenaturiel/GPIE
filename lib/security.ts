@@ -11,6 +11,8 @@
 const EXTRA_SCRIPT: string[] = [];
 const EXTRA_CONNECT: string[] = [];
 const EXTRA_IMG: string[] = [];
+/** Vídeo de YouTube (solo se crea el iframe al pulsar «reproducir»). */
+const FRAMES = ["https://www.youtube-nocookie.com"];
 
 export function buildCsp(nonce: string, isDev: boolean): string {
   const directives: Record<string, string[]> = {
@@ -21,6 +23,7 @@ export function buildCsp(nonce: string, isDev: boolean): string {
     "font-src": ["'self'"],
     "connect-src": ["'self'", ...EXTRA_CONNECT],
     "worker-src": ["'self'", "blob:"],
+    "frame-src": FRAMES,
     "object-src": ["'none'"],
     "base-uri": ["'self'"],
     "form-action": ["'self'"],

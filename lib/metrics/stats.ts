@@ -9,6 +9,7 @@ import { actualizarDoc, leerDoc } from "@/lib/store/docs";
  *   cta.<origen>      clic en un botón de puerta falsa
  *   empezado.<origen> empezó a rellenar los datos
  *   envio.<origen>    dejó sus datos (lo suma el servidor al guardar)
+ *   video             pulsó reproducir en el vídeo
  *
  * El almacén gratuito (Vercel Blob, Hobby) permite 2.000 escrituras al mes y se bloquea 30 días si se
  * pasan. Por eso los eventos se acumulan en memoria y se guardan juntos: al llegar una solicitud o, como
@@ -21,7 +22,7 @@ import { actualizarDoc, leerDoc } from "@/lib/store/docs";
 export const ORIGENES = ["cabecera", "portada", "tras-demo", "piloto", "ahorro"] as const;
 export type Origen = (typeof ORIGENES)[number];
 
-const EVENTOS_CLIENTE = ["visita", "cta", "empezado"] as const;
+const EVENTOS_CLIENTE = ["visita", "cta", "empezado", "video"] as const;
 export type EventoCliente = (typeof EVENTOS_CLIENTE)[number];
 
 const DOC = "contadores.json";
@@ -40,7 +41,7 @@ const mes = (d: Date) => d.toISOString().slice(0, 7);
 export function campo(evento: unknown, origen?: unknown): string | null {
   const valido = typeof evento === "string" && ((EVENTOS_CLIENTE as readonly string[]).includes(evento) || evento === "envio");
   if (!valido) return null;
-  if (evento === "visita") return evento;
+  if (evento === "visita" || evento === "video") return evento;
   if (typeof origen !== "string" || !(ORIGENES as readonly string[]).includes(origen)) return null;
   return `${evento}.${origen}`;
 }

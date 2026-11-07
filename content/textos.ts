@@ -228,3 +228,13 @@ export const formulario = {
   errorEnvio: "No hemos podido enviar tu solicitud. Inténtalo de nuevo en unos minutos.",
   cerrar: "Cerrar",
 };
+
+/** Vídeo (YouTube). Se carga solo al pulsar «reproducir»: hasta entonces no se conecta con YouTube. */
+export const video = {
+  id: "T2c1X1Gsi34",
+  titulo: "INTACTA - la mancha se va, tu mueble se queda",
+  antetitulo: "En vídeo",
+  titular: ["Así se ve en ", { g: "un hotel." }] as Rich,
+  reproducir: "Reproducir el vídeo",
+  aviso: "Al reproducirlo se conecta con YouTube (Google), que recibe tu IP. Usamos su versión sin cookies de seguimiento.",
+};

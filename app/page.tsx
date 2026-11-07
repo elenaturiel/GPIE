@@ -13,6 +13,7 @@ import { Pilot } from "@/components/sections/Pilot";
 import { Problem } from "@/components/sections/Problem";
 import { Specs } from "@/components/sections/Specs";
 import { Steps } from "@/components/sections/Steps";
+import { Video } from "@/components/sections/Video";
 import { Where } from "@/components/sections/Where";
 
 export default function Home() {
@@ -27,6 +28,7 @@ export default function Home() {
         <Hero />
         <Specs />
         <Demo />
+        <Video />
         <Marquee />
         <Band />
         <Problem />

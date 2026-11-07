@@ -2,7 +2,7 @@
  * Suma 1 a un contador del embudo (lib/metrics/stats.ts) desde el navegador.
  * Sin cookies ni identificadores: solo dice «ha pasado esto». Si falla, no pasa nada.
  */
-export function track(e: "visita" | "cta" | "empezado", o?: string) {
+export function track(e: "visita" | "cta" | "empezado" | "video", o?: string) {
   try {
     void fetch("/api/evento", {
       method: "POST",
