@@ -23,7 +23,7 @@ export const primeraCapa = {
   responsable: `Responsable: ${titular.nombre}.`,
   finalidad: "Finalidad: gestionar tu solicitud de piloto y contactarte sobre ella.",
   legitimacion: "Legitimación: tu consentimiento.",
-  destinatarios: "Destinatarios: no se ceden datos; Google (hoja de cálculo y email) y Vercel (alojamiento) actúan como encargados.",
+  destinatarios: "Destinatarios: no se ceden datos; Vercel (alojamiento) y Upstash (base de datos, servidores en la UE) actúan como encargados.",
   derechos: "Derechos: acceso, rectificación, supresión, oposición, limitación y portabilidad.",
   masInfo: "Más información en la",
   enlace: "política de privacidad",

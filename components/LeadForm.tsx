@@ -5,6 +5,8 @@ import { casillas, primeraCapa } from "@/content/legal";
 import { formulario as F } from "@/content/textos";
 import { formatoEuros, RANGOS_HABITACIONES, rangoHabitaciones } from "@/lib/calculadora/calculo";
 import { borrarEstimacion, useEstimacion } from "@/lib/calculadora/store";
+import { USOS } from "@/lib/lead/usos";
+import { track } from "@/lib/metrics/track";
 
 type Campo = "nombre" | "cargo" | "hotel" | "ciudad" | "habitaciones" | "email" | "telefono" | "aceptaPrivacidad";
 type Errores = Partial<Record<Campo, string>>;
@@ -40,6 +42,12 @@ export function LeadForm({ origen = "piloto", onDone }: { origen?: string; onDon
   const [roomsChoice, setRoomsChoice] = useState<string | null>(null);
   const rooms = roomsChoice ?? (estimacion ? rangoHabitaciones(estimacion.entradas.habitaciones) : "");
   const shownAt = useRef(0);
+  const started = useRef(false);
+  const onStart = () => {
+    if (started.current) return;
+    started.current = true;
+    track("empezado", origen);
+  };
   const okRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     shownAt.current = Date.now();
@@ -70,6 +78,7 @@ export function LeadForm({ origen = "piloto", onDone }: { origen?: string; onDon
       habitaciones: d.get("habitaciones"),
       email: d.get("email"),
       telefono: d.get("telefono"),
+      usos: d.getAll("usos"),
       aceptaPrivacidad: d.get("aceptaPrivacidad") === "on",
       aceptaComunicaciones: d.get("aceptaComunicaciones") === "on",
       origen,
@@ -140,7 +149,7 @@ export function LeadForm({ origen = "piloto", onDone }: { origen?: string; onDon
   );
 
   return (
-    <form className="lead-form" noValidate onSubmit={onSubmit}>
+    <form className="lead-form" noValidate onSubmit={onSubmit} onInput={onStart}>
       {estimacion && (
         <div className="estim full" role="status">
           <p>
@@ -170,6 +179,16 @@ export function LeadForm({ origen = "piloto", onDone }: { origen?: string; onDon
       </div>
       {field("email", { type: "email", autoComplete: "email", required: true })}
       {field("telefono", { type: "tel", autoComplete: "tel", inputMode: "tel" }, true)}
+
+      <fieldset className="usos full">
+        <legend>{F.usosPregunta}</legend>
+        {USOS.map((u) => (
+          <label key={u} className="chip">
+            <input type="checkbox" name="usos" value={u} />
+            <span>{u}</span>
+          </label>
+        ))}
+      </fieldset>
 
       {/* Trampa para bots: invisible para personas y lectores de pantalla. */}
       <div className="hp" aria-hidden="true">

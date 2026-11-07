@@ -66,7 +66,7 @@ export function drawLabel(c: HTMLCanvasElement, fonts: LabelFonts) {
   g.fill();
   g.restore();
 
-  text(L.tecnologia, cx, 880, { size: 32, family: fonts.mono, weight: 500, color: "#9FD8B8", track: 8 });
+  if (L.tecnologia) text(L.tecnologia, cx, 880, { size: 32, family: fonts.mono, weight: 500, color: "#9FD8B8", track: 8 });
   text(L.formato, cx + 470, 960, { size: 30, family: fonts.mono, color: "#9FD8B8" });
   text(L.origen, cx - 470, 960, { size: 30, family: fonts.mono, color: "#9FD8B8" });
 }

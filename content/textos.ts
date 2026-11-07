@@ -4,7 +4,7 @@
  * Cambia aquí cualquier frase y se actualiza en la página (y en la etiqueta del bote 3D).
  *
  * ⚠️ Las líneas marcadas con «TECNAN» son afirmaciones sobre el producto que hay que
- *    confirmar con Tecnan antes de publicar. Hasta entonces se muestran tal cual,
+ *    confirmar con el fabricante antes de publicar. Hasta entonces se muestran tal cual,
  *    pero no deben salir a producción sin esa confirmación.
  * ⚠️ Las marcadas con «PILOTO» son condiciones del piloto que tiene que confirmar el equipo.
  *
@@ -19,8 +19,9 @@ export type Rich = (string | { g: string } | { b: string })[];
 
 export const marca = {
   nombre: "INTACTA",
-  apellido: "con tecnología Tecnan", // permiso de Tecnan pendiente
-  pie: ["INTACTA · Antimanchas textil", "Con tecnología Tecnan · Navarra"],
+  // La web no menciona al fabricante (decisión del equipo): ni en la cabecera, ni en el pie, ni en el bote.
+  apellido: "",
+  pie: ["INTACTA · Antimanchas textil para hoteles"],
 };
 
 export const cta = {
@@ -32,7 +33,7 @@ export const cta = {
 export const portada = {
   titular: ["La mancha", "no entra."], // TECNAN
   antetitulo: "Antimanchas para tapicería de hotel",
-  texto: "INTACTA protege butacas, sofás y cabeceros con nanotecnología de Tecnan.", // TECNAN
+  texto: "INTACTA protege butacas, sofás y cabeceros con nanotecnología.", // TECNAN
   textoSuave: "Lo que se derrama se queda en gotas: un paño y listo.", // TECNAN
   desliza: "Desliza",
 };
@@ -42,7 +43,7 @@ export const especificaciones = {
   titular: ["Un bote para ", { g: "cada tapicería." }] as Rich,
   puntos: [
     { etiqueta: "Gatillo", titulo: "Niebla fina", texto: "Cubre el tejido de forma uniforme sin empaparlo." }, // TECNAN
-    { etiqueta: "Fórmula", titulo: "Nanotecnología Tecnan", texto: "Una capa invisible que recubre cada fibra." }, // TECNAN
+    { etiqueta: "Fórmula", titulo: "Nanotecnología", texto: "Una capa invisible que recubre cada fibra." }, // TECNAN
     { etiqueta: "Formato", titulo: "750 ml profesional", texto: "Cabe en el carro de la camarera de pisos." }, // TECNAN (formato sin decidir)
     { etiqueta: "Resultado", titulo: "Tejido intacto", texto: "El líquido se queda en gotas y se retira con un paño." }, // TECNAN
   ],
@@ -142,6 +143,7 @@ export const piloto = {
   informe:
     "Al terminar te entregamos un informe con las manchas registradas, el tiempo de limpieza y las piezas que no tuvieron que salir a tintorería, comparado con habitaciones sin tratar.", // PILOTO
   formTitular: ["Reserva una de las ", { g: "plazas." }] as Rich, // PILOTO (¿cuántas plazas hay?)
+  formTexto: "Estamos eligiendo los primeros hoteles. Cuéntanos quién eres y te escribimos.",
 };
 
 /** Textos de la etiqueta del bote 3D (también son afirmaciones de producto). */
@@ -150,7 +152,7 @@ export const etiquetaBote = {
   nombre: "INTACTA",
   lema: "PROTECCIÓN INVISIBLE PARA TAPICERÍA", // TECNAN
   usos: "Butacas · Sofás · Cabeceros · Cojines",
-  tecnologia: "CON TECNOLOGÍA TECNAN",
+  tecnologia: "", // vacío: no se pinta (la web no menciona al fabricante)
   formato: "750 ml", // TECNAN (formato sin decidir)
   origen: "Navarra",
 };
@@ -199,12 +201,16 @@ export const calculadora = {
   cta: "Comprueba estas cifras en un piloto gratuito",
   aviso: "Estimación orientativa con valores de ejemplo. El piloto mide el ahorro real en tu hotel.",
   supuestosTitulo: "Supuestos de INTACTA usados (provisionales)",
-  supuestosNota: "Pendientes de confirmar con Tecnan y con los datos del piloto.",
+  supuestosNota: "Pendientes de confirmar con el fabricante y con los datos del piloto.",
 };
 
 /** Formulario del piloto. */
 export const formulario = {
-  titularModal: ["Solicita tu ", { g: "piloto gratuito." }] as Rich,
+  // Puerta falsa: el botón dice «Solicitar piloto»; al pulsarlo, contamos el interés y lo decimos claro.
+  titularModal: ["¿Te ", { g: "interesa?" }] as Rich,
+  introModal:
+    "Estamos preparando un piloto gratuito con los primeros hoteles. Si te interesa, puedes ser de los primeros en probar INTACTA: déjanos tus datos y te escribimos.",
+  usosPregunta: "¿Dónde lo usarías? (opcional)",
   campos: {
     nombre: "Nombre",
     cargo: "Cargo",

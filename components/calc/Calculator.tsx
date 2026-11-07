@@ -5,6 +5,7 @@ import { entradas as defs, grupos, supuestosIntacta, valoresEjemplo, valoresSupu
 import { calculadora as T } from "@/content/textos";
 import { calcular, formatoEuros, formatoNumero, type Desglose } from "@/lib/calculadora/calculo";
 import { guardarEstimacion } from "@/lib/calculadora/store";
+import { track } from "@/lib/metrics/track";
 import { Field } from "./Field";
 import { Segmented } from "./Segmented";
 import { useTween } from "./useTween";
@@ -53,7 +54,14 @@ export function Calculator() {
     return () => clearTimeout(t);
   }, [r.ahorro, div, periodo]);
 
-  const set = (k: keyof Entradas) => (v: number) => setValores((s) => ({ ...s, [k]: v }));
+  const usada = useRef(false);
+  const set = (k: keyof Entradas) => (v: number) => {
+    if (!usada.current) {
+      usada.current = true;
+      track("calculadora");
+    }
+    setValores((s) => ({ ...s, [k]: v }));
+  };
   const tabIndex = grupos.findIndex((g) => g.id === tab);
   const onTabKey = (e: React.KeyboardEvent) => {
     const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;

@@ -1,4 +1,6 @@
 import { RANGOS_HABITACIONES } from "@/lib/calculadora/calculo";
+import { ORIGENES } from "@/lib/metrics/stats";
+import { USOS } from "./usos";
 
 /**
  * Validación de la solicitud de piloto en el servidor (no se fía de lo que valide el navegador).
@@ -14,6 +16,7 @@ export type LeadInput = {
   habitaciones?: unknown;
   email?: unknown;
   telefono?: unknown;
+  usos?: unknown;
   aceptaPrivacidad?: unknown;
   aceptaComunicaciones?: unknown;
   origen?: unknown;
@@ -42,6 +45,7 @@ export type Lead = {
   habitaciones: string;
   email: string;
   telefono: string;
+  usos: string[];
   aceptaComunicaciones: boolean;
   origen: string;
   utm: { source: string; medium: string; campaign: string };
@@ -58,7 +62,6 @@ export const TIEMPO_MINIMO_MS = 2500;
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const TELEFONO = /^\+?[0-9 ()-]{6,20}$/;
-const ORIGENES = ["cabecera", "portada", "tras-demo", "calculadora", "piloto"];
 
 const texto = (v: unknown, max: number) =>
   typeof v === "string"
@@ -104,8 +107,9 @@ export function validarLead(body: LeadInput): Resultado {
     habitaciones: texto(body.habitaciones, 20),
     email: texto(body.email, 254).toLowerCase(),
     telefono: texto(body.telefono, 20),
+    usos: Array.isArray(body.usos) ? USOS.filter((u) => (body.usos as unknown[]).includes(u)) : [],
     aceptaComunicaciones: body.aceptaComunicaciones === true,
-    origen: ORIGENES.includes(texto(body.origen, 20)) ? texto(body.origen, 20) : "desconocido",
+    origen: (ORIGENES as readonly string[]).includes(texto(body.origen, 20)) ? texto(body.origen, 20) : "desconocido",
     utm: { source: "", medium: "", campaign: "" },
     calculadora: calculadora(body.calculadora),
   };
@@ -126,5 +130,5 @@ export function validarLead(body: LeadInput): Resultado {
   return Object.keys(errores).length ? { ok: false, bot: false, errores } : { ok: true, lead };
 }
 
-/** Evita que un texto que empieza por = + - @ se interprete como fórmula en la hoja de cálculo. */
+/** Evita que un texto que empieza por = + - @ se interprete como fórmula al abrir el CSV en Excel o Sheets. */
 export const seguroParaHoja = (s: string) => s.replace(/^[=+\-@\t\r]/, "'$&");

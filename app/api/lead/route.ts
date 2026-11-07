@@ -1,9 +1,10 @@
 import { createHash } from "node:crypto";
+import { sumar } from "@/lib/metrics/stats";
 import { crearLimitador } from "@/lib/lead/rate-limit";
-import { aFila, guardarEnHoja } from "@/lib/lead/sheets";
+import { guardarInteresado, nuevoInteresado } from "@/lib/lead/repo";
 import { validarLead, type LeadInput } from "@/lib/lead/validate";
 
-// POST /api/lead → valida la solicitud de piloto y la guarda en Google Sheets.
+// POST /api/lead → valida los datos de un hotel interesado y los guarda en la base de datos (ver /panel).
 
 const permitido = crearLimitador(5, 10 * 60 * 1000);
 const MAX_BYTES = 16 * 1024;
@@ -33,10 +34,13 @@ export async function POST(request: Request) {
   if (!r.ok && r.bot) return json(200, { ok: true }); // a los bots se les dice que sí y no se guarda nada
   if (!r.ok) return json(422, { ok: false, errores: r.errores });
 
-  const envio = await guardarEnHoja(aFila(r.lead, new Date()));
-  if (!envio.ok) {
-    console.error("[lead]", envio.detalle);
+  try {
+    await guardarInteresado(nuevoInteresado(r.lead, new Date()));
+  } catch (e) {
+    console.error("[lead]", (e as Error).message);
     return json(502, { ok: false, error: "No se ha podido guardar la solicitud." });
   }
+  // el contador del embudo no debe hacer fallar una solicitud ya guardada
+  await sumar(`envio.${r.lead.origen === "desconocido" ? "piloto" : r.lead.origen}`).catch((e) => console.error("[lead] contador", (e as Error).message));
   return json(200, { ok: true });
 }

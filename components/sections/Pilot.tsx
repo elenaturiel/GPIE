@@ -1,5 +1,4 @@
-import { piloto } from "@/content/textos";
-import { LeadForm } from "../LeadForm";
+import { cta, piloto } from "@/content/textos";
 import { Drops } from "../motion/Drops";
 import { Fold } from "../motion/Fold";
 import { RollingNumber } from "../motion/RollingNumber";
@@ -27,8 +26,13 @@ export function Pilot() {
           <p className="report" data-reveal>{p.informe}</p>
           <div className="formbox">
             <Fold as="h3" text={p.formTitular} />
+            <p className="formbox-text" data-reveal>
+              {p.formTexto}
+            </p>
             <div data-reveal>
-              <LeadForm origen="piloto" />
+              <a className="btn btn-primary btn-xl js-cta" data-cta="piloto" href="#piloto">
+                {cta.principal}
+              </a>
             </div>
           </div>
         </div>

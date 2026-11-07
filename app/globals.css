@@ -2085,3 +2085,226 @@ html:not(.fx-on) .step-t {
   font-size: clamp(3rem, 8vw, 6rem);
   margin: 24px 0 32px;
 }
+
+/* ── Puerta falsa: ventana «¿Te interesa?» y botón de la sección piloto ── */
+.dlg-head {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.dlg-intro {
+  margin: 0;
+  max-width: 52ch;
+  color: var(--muted);
+  font-size: 17px;
+}
+.formbox-text {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--muted);
+}
+.btn-xl {
+  padding: 20px 30px;
+  font-size: 17px;
+}
+.usos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 0;
+  padding: 0;
+  border: 0;
+}
+.usos legend {
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 0;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.chip {
+  position: relative;
+  cursor: pointer;
+}
+.chip input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.chip span {
+  display: inline-block;
+  padding: 9px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 14px;
+  background: var(--bg);
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+.chip input:checked + span {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+.chip input:focus-visible + span {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .chip:hover span {
+    border-color: var(--ink);
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   PANEL (/panel): interesados y embudo del pretotipo
+   ════════════════════════════════════════════════════════════ */
+.pnl {
+  padding-block: 48px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.pnl h1 {
+  font-size: clamp(2.6rem, 6vw, 4.4rem);
+}
+.pnl-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.pnl-login {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 360px;
+}
+.pnl-login label {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.pnl-login input {
+  font: 500 16px var(--f-body);
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.pnl-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr));
+  gap: 20px;
+}
+.pnl-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: clamp(18px, 3vw, 28px);
+  border-radius: 20px;
+  background: var(--mint-2);
+}
+.pnl-card h2 {
+  margin: 0;
+  color: var(--green);
+}
+.pnl-funnel {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+@media (max-width: 640px) {
+  .pnl-funnel {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.pnl-funnel div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--bg);
+}
+.pnl-funnel b {
+  font-family: var(--f-display);
+  font-stretch: 62%;
+  font-weight: 850;
+  font-size: 3.2rem;
+  line-height: 0.9;
+}
+.pnl-funnel span {
+  font-size: 14px;
+  font-weight: 600;
+}
+.pnl-funnel em {
+  font-style: normal;
+  font-size: 13px;
+  color: var(--muted);
+}
+.pnl-hit b {
+  color: var(--green);
+}
+.pnl-note {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+.pnl-mini,
+.pnl-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.pnl-mini th,
+.pnl-mini td,
+.pnl-table th,
+.pnl-table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+.pnl-mini td {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.pnl-table thead th,
+.pnl-mini thead th {
+  font: 500 11px/1.2 var(--f-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.pnl-scroll {
+  overflow-x: auto;
+  background: var(--bg);
+  border-radius: 14px;
+}
+.pnl-table td {
+  white-space: nowrap;
+}
+.pnl-empty {
+  margin: 0;
+  padding: 24px;
+  background: var(--bg);
+  border-radius: 14px;
+}
+.pnl-del {
+  border: 0;
+  background: none;
+  color: #a3283c;
+  font: 600 13px var(--f-body);
+  text-decoration: underline;
+  cursor: pointer;
+}

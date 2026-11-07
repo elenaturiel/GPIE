@@ -1,6 +1,6 @@
 # INTACTA · web del pretotipo
 
-Landing para medir el interés de hoteles en un piloto de INTACTA (antimanchas textil con tecnología Tecnan).
+Landing para medir el interés de hoteles en un piloto de INTACTA (antimanchas textil para hoteles).
 Proyecto GPIE · Universidad de Navarra.
 
 > README provisional (fases 0–1). La versión completa —contactos, métricas, cookies, calculadora— llega en la fase 7.
@@ -38,26 +38,28 @@ dispositivo no tiene WebGL y con «reducir movimiento».
 
 Para ver el 3D en un equipo sin GPU (que normalmente usaría la imagen): `/?3d=force`.
 
-## Solicitudes de piloto → Google Sheets
+## Puerta falsa, interesados y panel
 
-Cada solicitud se guarda como una fila en una hoja de Google Sheets y te llega un email de aviso. Lo hace un
-Apps Script instalado en la hoja (`google-apps-script/Code.gs`); la web no habla con Google desde el navegador: el
-servidor (`/api/lead`) valida los datos, frena bots y envíos repetidos, y reenvía la fila con una clave secreta.
+Todos los botones «Solicitar piloto» son una **puerta falsa**: al pulsarlos se cuenta el interés y se abre una ventana
+que dice, sin rodeos, que el piloto está en preparación y que quien quiera puede ser de los primeros dejando sus datos.
 
-1. Con la cuenta de Google del proyecto, crea una hoja de cálculo (p. ej. «INTACTA · Solicitudes de piloto»).
-2. **Extensiones → Apps Script**, borra lo que haya y pega `google-apps-script/Code.gs`. Guarda.
-3. **⚙️ Configuración del proyecto → Propiedades de la secuencia de comandos → Añadir**:
-   - `SECRET` = una clave larga inventada
-   - `NOTIFY_EMAIL` = el email que recibe los avisos (si no, va a la cuenta dueña del script)
-4. **Implementar → Nueva implementación → Aplicación web** · Ejecutar como: *Yo* · Acceso: *Cualquier usuario* → Autorizar.
-5. **Activadores (⏰) → Añadir activador** → `purgarAntiguas`, según tiempo, cada día (borra solicitudes de más de
-   12 meses salvo las que tengan `MANTENER` en la columna *Estado*).
-6. En Vercel → **Settings → Environment Variables**: `GOOGLE_SHEETS_WEBHOOK_URL` (la URL que acaba en `/exec`) y
-   `GOOGLE_SHEETS_SECRET` (la misma clave del paso 3). Después, **Deployments → Redeploy**.
+- **Interesados** (lo que dejan en el formulario) → base de datos de la web.
+- **Contadores del embudo** (visitas, clics en «Solicitar piloto» por botón, formularios empezados, datos enviados,
+  uso de la calculadora) → la misma base de datos, como totales por día, **sin datos personales ni cookies**.
+- Todo se ve en **`/panel`** (en tu dominio de Vercel), con contraseña: embudo y tasas de conversión, lista de
+  interesados, **Descargar CSV** y **Borrar** (si alguien pide que borres sus datos). Los interesados se borran solos
+  a los 12 meses.
 
-La primera solicitud crea la pestaña «Solicitudes» con las cabeceras. Si algo falla, el motivo queda en los logs de
-la función en Vercel (`[lead] …`) y el formulario le dice al hotel que lo intente de nuevo.
+### Puesta en marcha en Vercel (una vez, ~5 minutos)
 
-**Si un contacto pide sus datos o que los borres:** búscalo en la hoja (Ctrl+F con su email), copia su fila
-(acceso / portabilidad) o bórrala (supresión). La columna *Consentimiento* guarda la fecha, la versión y el texto
-exacto que aceptó.
+1. Proyecto en Vercel → pestaña **Storage** → **Create Database** → **Upstash for Redis** (plan gratuito) →
+   región **Frankfurt (eu-central-1)** → conéctala al proyecto. Vercel añade solas las variables
+   `KV_REST_API_URL` y `KV_REST_API_TOKEN`.
+2. **Settings → Environment Variables** → añade `PANEL_PASSWORD` con una contraseña larga.
+3. **Deployments → Redeploy**.
+4. Entra en `https://TU-DOMINIO.vercel.app/panel` con esa contraseña.
+
+Para probar en local sin base de datos: `STORE=memory PANEL_PASSWORD=prueba npm run dev` (los datos se pierden al parar).
+
+**Si un contacto pide sus datos o que los borres:** en `/panel`, descarga el CSV (acceso / portabilidad) o pulsa
+«Borrar» en su fila (supresión). Cada interesado guarda la fecha, la versión y el texto exacto del consentimiento.

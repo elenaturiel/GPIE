@@ -6,7 +6,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "INTACTA · Antimanchas para tapicería de hotel",
   description:
-    "INTACTA protege butacas, sofás y cabeceros de hotel con nanotecnología de Tecnan. Solicita un piloto gratuito en tu hotel.",
+    "INTACTA protege butacas, sofás y cabeceros de hotel con nanotecnología. Solicita un piloto gratuito en tu hotel.",
 };
 
 export const viewport: Viewport = {

@@ -3,7 +3,7 @@
  *
  * ⚠️ Nada de esto es un dato de mercado ni de eficacia.
  *    - Las ENTRADAS son valores de ejemplo editables: el hotel los cambia con los controles.
- *    - Los SUPUESTOS de INTACTA están PENDIENTES de Tecnan y del piloto. Son marcadores para que la
+ *    - Los SUPUESTOS de INTACTA están PENDIENTES del fabricante y del piloto. Son marcadores para que la
  *      calculadora funcione; la web lo dice siempre («Estimación orientativa con valores de ejemplo»).
  *      Cuando haya datos, cambia `valor`, pon `pendiente: false` y apunta la `fuente`.
  *
@@ -54,14 +54,14 @@ export type Supuesto = { etiqueta: string; valor: number; unidad: string; pendie
 
 /** Supuestos de INTACTA. ⚠️ TODOS PENDIENTES: valores provisionales sin respaldo todavía. */
 export const supuestosIntacta = {
-  precioPorPieza: { etiqueta: "Precio del tratamiento por pieza y aplicación", valor: 6, unidad: "€", pendiente: true, fuente: "Tecnan" },
-  aplicacionesPorAno: { etiqueta: "Aplicaciones al año", valor: 2, unidad: "", pendiente: true, fuente: "Tecnan" },
+  precioPorPieza: { etiqueta: "Precio del tratamiento por pieza y aplicación", valor: 6, unidad: "€", pendiente: true, fuente: "fabricante" },
+  aplicacionesPorAno: { etiqueta: "Aplicaciones al año", valor: 2, unidad: "", pendiente: true, fuente: "fabricante" },
   manchasEvitadas: {
     etiqueta: "Manchas que se resuelven en el momento con un paño",
     valor: 70,
     unidad: "%",
     pendiente: true,
-    fuente: "Tecnan / piloto",
+    fuente: "fabricante / piloto",
   },
   minutosPano: { etiqueta: "Tiempo de pasar el paño por mancha", valor: 5, unidad: "min", pendiente: true, fuente: "piloto" },
 } satisfies Record<string, Supuesto>;
