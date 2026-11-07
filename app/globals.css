@@ -1972,3 +1972,11 @@ html:not(.fx-on) .step-t {
   font-weight: 600;
   margin-bottom: 8px;
 }
+.pnl-warn {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #fff4e0;
+  color: #6b4500;
+  font-size: 15px;
+}

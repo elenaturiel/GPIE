@@ -47,22 +47,28 @@ está en preparación y que quien quiera puede ser de los primeros dejando sus d
 
 Los datos de las dos llegan al mismo sitio, marcados con su puerta.
 
-- **Interesados** (lo que dejan en el formulario) → base de datos de la web.
-- **Contadores del embudo** (visitas, clics por puerta y por botón, formularios empezados, datos enviados) → la misma base de datos, como totales por día, **sin datos personales ni cookies**.
+- **Interesados** (lo que dejan en el formulario) → almacenamiento privado de la web en **Vercel Blob**.
+- **Contadores del embudo** (visitas, clics por puerta y por botón, formularios empezados, datos enviados) → el mismo
+  almacén, como totales por día, **sin datos personales ni cookies**.
 - Todo se ve en **`/panel`** (en tu dominio de Vercel), con contraseña: embudo y tasas de conversión, lista de
-  interesados con su puerta falsa y filtros, **Descargar CSV** y **Borrar** (si alguien pide que borres sus datos). Los interesados se borran solos
-  a los 12 meses.
+  interesados con su puerta falsa y filtros, **Descargar CSV** y **Borrar** (si alguien pide que borres sus datos).
+  Los interesados se borran solos a los 12 meses.
 
-### Puesta en marcha en Vercel (una vez, ~5 minutos)
+### Puesta en marcha en Vercel (una vez, ~5 minutos, gratis en el plan Hobby)
 
-1. Proyecto en Vercel → pestaña **Storage** → **Create Database** → **Upstash for Redis** (plan gratuito) →
-   región **Frankfurt (eu-central-1)** → conéctala al proyecto. Vercel añade solas las variables
-   `KV_REST_API_URL` y `KV_REST_API_TOKEN`.
+1. Proyecto en Vercel → pestaña **Storage** → **Create** → **Blob** → acceso **Private** → región **Frankfurt (fra1)** →
+   conéctalo al proyecto (Vercel pone solo las credenciales).
 2. **Settings → Environment Variables** → añade `PANEL_PASSWORD` con una contraseña larga.
 3. **Deployments → Redeploy**.
 4. Entra en `https://TU-DOMINIO.vercel.app/panel` con esa contraseña.
 
-Para probar en local sin base de datos: `STORE=memory PANEL_PASSWORD=prueba npm run dev` (los datos se pierden al parar).
+**Límites del plan gratuito de Vercel Blob:** 1 GB y 2.000 escrituras al mes. Si se superan no se paga nada, pero
+Vercel bloquea el almacén 30 días. Para no acercarse: cada solicitud es una sola escritura; los contadores se guardan
+agrupados (al llegar una solicitud o, como mucho, cada 30 minutos) y tienen un tope de 1.200 escrituras al mes, que
+deja sitio de sobra para los interesados. Por eso visitas y clics son cifras aproximadas. El panel avisa si se llega
+al tope (`lib/metrics/stats.ts`).
+
+Para probar en local sin Vercel: `STORE=memory PANEL_PASSWORD=prueba npm run dev` (los datos se pierden al parar).
 
 **Si un contacto pide sus datos o que los borres:** en `/panel`, descarga el CSV (acceso / portabilidad) o pulsa
 «Borrar» en su fila (supresión). Cada interesado guarda la fecha, la versión y el texto exacto del consentimiento.

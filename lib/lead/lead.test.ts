@@ -94,11 +94,15 @@ describe("crearLimitador", () => {
 });
 
 process.env.STORE = "memory";
-import { kv, KvNoConfigurado } from "@/lib/store/kv";
+import { vi } from "vitest";
+import { actualizarDoc, AlmacenNoConfigurado, Conflicto, escribirDoc, leerDoc } from "@/lib/store/docs";
 import { borrarInteresado, guardarInteresado, listarInteresados, nuevoInteresado } from "./repo";
-import { campo, leerTotales, puertaDe, sumar, sumaTipo } from "@/lib/metrics/stats";
+import { campo, INTERVALO_MS, leerTotales, pendientes, puertaDe, sumar, sumaTipo, TOPE_ESCRITURAS_MES } from "@/lib/metrics/stats";
 
-describe("interesados en la base de datos", () => {
+const blob = vi.hoisted(() => ({ put: vi.fn(), get: vi.fn() }));
+vi.mock("@vercel/blob", async (orig) => ({ ...(await orig<typeof import("@vercel/blob")>()), put: blob.put, get: blob.get }));
+
+describe("interesados en el almacén", () => {
   const r = validarLead(valido);
   if (!r.ok) throw new Error("debería ser válido");
 
@@ -125,6 +129,42 @@ describe("interesados en la base de datos", () => {
     expect(lista.map((i) => i.id)).toEqual([reciente.id]);
     await borrarInteresado(reciente.id);
   });
+
+  it("dos solicitudes a la vez no se pisan", async () => {
+    const xs = Array.from({ length: 6 }, (_, k) => nuevoInteresado({ ...r.lead, hotel: `H${k}` }, new Date()));
+    await Promise.all(xs.map(guardarInteresado));
+    const lista = await listarInteresados();
+    expect(lista.map((i) => i.hotel).sort()).toEqual(["H0", "H1", "H2", "H3", "H4", "H5"]);
+    for (const x of xs) await borrarInteresado(x.id);
+  });
+});
+
+describe("almacén de documentos", () => {
+  it("una escritura con un etag viejo da Conflicto, y actualizarDoc lo reintenta", async () => {
+    await actualizarDoc("prueba.json", { n: 0 }, (d) => ({ n: d.n + 1 }));
+    const { etag } = await leerDoc("prueba.json", { n: 0 });
+    await escribirDoc("prueba.json", { n: 5 }, etag);
+    await expect(escribirDoc("prueba.json", { n: 9 }, etag)).rejects.toBeInstanceOf(Conflicto);
+    expect((await leerDoc("prueba.json", { n: 0 })).data).toEqual({ n: 5 });
+  });
+
+  it("sin configuración avisa claramente", async () => {
+    await expect(leerDoc("x.json", [], {})).rejects.toBeInstanceOf(AlmacenNoConfigurado);
+  });
+
+  it("en Vercel Blob lee y escribe en privado, con escritura condicional", async () => {
+    const env = { BLOB_READ_WRITE_TOKEN: "vercel_blob_rw_x" };
+    blob.get.mockResolvedValueOnce({ statusCode: 200, stream: new Response('{"n":1}').body, headers: new Headers(), blob: { etag: '"e1"' } });
+    const d = await leerDoc("c.json", { n: 0 }, env);
+    expect(d).toEqual({ data: { n: 1 }, etag: '"e1"' });
+    expect(blob.get).toHaveBeenCalledWith("intacta/c.json", { access: "private", useCache: false });
+    blob.put.mockResolvedValueOnce({});
+    await escribirDoc("c.json", { n: 2 }, '"e1"', env);
+    expect(blob.put).toHaveBeenCalledWith("intacta/c.json", '{"n":2}', expect.objectContaining({ access: "private", ifMatch: '"e1"', allowOverwrite: true, addRandomSuffix: false }));
+    blob.put.mockResolvedValueOnce({});
+    await escribirDoc("nuevo.json", [], null, env);
+    expect(blob.put).toHaveBeenLastCalledWith("intacta/nuevo.json", "[]", expect.objectContaining({ access: "private", allowOverwrite: false }));
+  });
 });
 
 describe("contadores del embudo", () => {
@@ -137,35 +177,36 @@ describe("contadores del embudo", () => {
     expect(campo("calculadora")).toBeNull(); // ya no existe
   });
 
-  it("suma por día y totaliza", async () => {
-    const hoy = new Date("2026-11-07T12:00:00Z");
-    const ayer = new Date("2026-11-06T12:00:00Z");
-    await sumar("visita", ayer);
-    await sumar("visita", hoy);
-    await sumar("cta.portada", hoy);
-    await sumar("cta.cabecera", hoy);
-    const { total, porDia } = await leerTotales(7, hoy);
-    expect(total.visita).toBe(2);
-    expect(sumaTipo(total, "cta")).toBe(2);
-    expect(porDia.at(-1)).toEqual({ dia: "2026-11-07", t: { visita: 1, "cta.portada": 1, "cta.cabecera": 1 } });
-  });
-});
-
-describe("kv", () => {
-  it("sin configuración avisa claramente", async () => {
-    await expect(kv([["LRANGE", "x", 0, -1]], {})).rejects.toBeInstanceOf(KvNoConfigurado);
+  it("agrupa los eventos y los guarda juntos como mucho cada 30 minutos", async () => {
+    const t0 = new Date("2026-11-07T12:00:00Z");
+    await sumar("cta.cabecera", t0, { inmediato: true }); // deja la instancia «recién guardada»
+    await sumar("visita", new Date(t0.getTime() + 1000));
+    await sumar("visita", new Date(t0.getTime() + 60_000));
+    expect(pendientes()["2026-11-07"]).toEqual({ visita: 2 }); // aún sin guardar…
+    const antes = (await leerTotales(1, t0)).escriturasMes;
+    await sumar("cta.portada", new Date(t0.getTime() + INTERVALO_MS)); // …hasta que pasan 30 min
+    expect(pendientes()).toEqual({});
+    const { total, escriturasMes } = await leerTotales(7, t0);
+    expect(total.visita).toBeGreaterThanOrEqual(2);
+    expect(sumaTipo(total, "cta")).toBeGreaterThanOrEqual(1);
+    expect(escriturasMes).toBe(antes + 1); // tres eventos, una sola escritura
   });
 
-  it("habla con Upstash por /pipeline con su token", async () => {
-    let call: { url: string; init: RequestInit } | null = null;
-    const res = await kv([["HINCRBY", "k", "f", 1]], { KV_REST_API_URL: "https://eu1.upstash.io/", KV_REST_API_TOKEN: "tok" }, (async (url: string, init: RequestInit) => {
-      call = { url, init };
-      return new Response(JSON.stringify([{ result: 5 }]));
-    }) as typeof fetch);
-    expect(res).toEqual([5]);
-    expect(call!.url).toBe("https://eu1.upstash.io/pipeline");
-    expect((call!.init.headers as Record<string, string>).Authorization).toBe("Bearer tok");
-    expect(JSON.parse(String(call!.init.body))).toEqual([["HINCRBY", "k", "f", "1"]]);
+  it("una solicitud se guarda al momento", async () => {
+    const t = new Date("2026-11-07T13:00:00Z");
+    await sumar("envio.ahorro", t, { inmediato: true });
+    expect(pendientes()).toEqual({});
+    expect((await leerTotales(1, t)).total["envio.ahorro"]).toBe(1);
+  });
+
+  it("al llegar al tope de escrituras del mes deja de escribir (y el panel lo sabe)", async () => {
+    const t = new Date("2027-01-15T10:00:00Z");
+    // simula un mes en el que ya se han hecho todas las escrituras permitidas
+    await actualizarDoc<{ dias: object; escrituras: Record<string, number> }>("contadores.json", { dias: {}, escrituras: {} }, (d) => ({ ...d, escrituras: { ...d.escrituras, "2027-01": TOPE_ESCRITURAS_MES } }));
+    await sumar("visita", t, { inmediato: true });
+    const r2 = await leerTotales(1, t);
+    expect(r2.topeAlcanzado).toBe(true);
+    expect(r2.escriturasMes).toBe(TOPE_ESCRITURAS_MES);
   });
 });
 

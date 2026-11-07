@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { OBJETIVO_CONVERSION } from "@/config/pretotipo";
 import { listarInteresados, type Interesado } from "@/lib/lead/repo";
-import { leerTotales, ORIGENES, PUERTAS, puertaDe, sumaTipo, type Totales } from "@/lib/metrics/stats";
+import { leerTotales, ORIGENES, PUERTAS, puertaDe, sumaTipo, TOPE_ESCRITURAS_MES, type Totales } from "@/lib/metrics/stats";
 import { panelConfigurado, sesionValida } from "@/lib/panel/auth";
-import { KvNoConfigurado } from "@/lib/store/kv";
+import { AlmacenNoConfigurado } from "@/lib/store/docs";
 import { salir } from "./actions";
 import { Borrar, Login } from "./ui";
 
@@ -49,7 +49,8 @@ function Embudo({ t, titulo }: { t: Totales; titulo: string }) {
         </div>
       </div>
       <p className="pnl-note">
-        Objetivo de la hipótesis: {OBJETIVO_CONVERSION === null ? "pendiente (config/pretotipo.ts)" : `${OBJETIVO_CONVERSION} % de las visitas`}.
+          Objetivo de la hipótesis: {OBJETIVO_CONVERSION === null ? "pendiente (config/pretotipo.ts)" : `${OBJETIVO_CONVERSION} % de las visitas`}. Las cifras
+        de visitas y clics son aproximadas: se guardan agrupadas para no gastar el almacenamiento gratuito.
       </p>
       <table className="pnl-mini">
         <thead>
@@ -144,7 +145,7 @@ function Tabla({ lista }: { lista: Interesado[] }) {
   );
 }
 
-type Datos = { lista: Interesado[]; mes: { total: Totales }; todo: { total: Totales } } | { error: string };
+type Datos = { lista: Interesado[]; mes: { total: Totales }; todo: { total: Totales; escriturasMes: number; topeAlcanzado: boolean } } | { error: string };
 
 async function leerDatos(): Promise<Datos> {
   try {
@@ -152,7 +153,7 @@ async function leerDatos(): Promise<Datos> {
     return { lista, mes, todo };
   } catch (e) {
     console.error("[panel]", (e as Error).message);
-    return { error: e instanceof KvNoConfigurado ? e.message : "No se ha podido leer la base de datos. Inténtalo de nuevo en un momento." };
+    return { error: e instanceof AlmacenNoConfigurado ? e.message : "No se ha podido leer la base de datos. Inténtalo de nuevo en un momento." };
   }
 }
 
@@ -186,6 +187,12 @@ export default async function Panel({ searchParams }: { searchParams: Promise<{ 
       </p>
     ) : (
       <>
+        {datos.todo.topeAlcanzado && (
+          <p className="pnl-warn" role="alert">
+            Este mes se ha llegado al tope de {TOPE_ESCRITURAS_MES} guardados de contadores: las visitas y los clics no suman hasta el mes que viene. Los
+            interesados se siguen guardando con normalidad.
+          </p>
+        )}
         <div className="pnl-grid">
           <Embudo t={datos.mes.total} titulo="Últimos 30 días" />
           <Embudo t={datos.todo.total} titulo="Desde el principio" />

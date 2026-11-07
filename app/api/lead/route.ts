@@ -4,7 +4,7 @@ import { crearLimitador } from "@/lib/lead/rate-limit";
 import { guardarInteresado, nuevoInteresado } from "@/lib/lead/repo";
 import { validarLead, type LeadInput } from "@/lib/lead/validate";
 
-// POST /api/lead → valida los datos de un hotel interesado y los guarda en la base de datos (ver /panel).
+// POST /api/lead → valida los datos de un hotel interesado y los guarda en el almacén de la web (ver /panel).
 
 const permitido = crearLimitador(5, 10 * 60 * 1000);
 const MAX_BYTES = 16 * 1024;
@@ -41,6 +41,6 @@ export async function POST(request: Request) {
     return json(502, { ok: false, error: "No se ha podido guardar la solicitud." });
   }
   // el contador del embudo no debe hacer fallar una solicitud ya guardada
-  await sumar(`envio.${r.lead.origen === "desconocido" ? "piloto" : r.lead.origen}`).catch((e) => console.error("[lead] contador", (e as Error).message));
+  await sumar(`envio.${r.lead.origen === "desconocido" ? "piloto" : r.lead.origen}`, new Date(), { inmediato: true }).catch((e) => console.error("[lead] contador", (e as Error).message));
   return json(200, { ok: true });
 }
